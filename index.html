@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="app-build" content="20260802-2050">
+<meta name="app-build" content="20260802-2115">
 <meta name="theme-color" content="#14161C">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
@@ -352,6 +352,11 @@ main{flex:1;padding:16px 16px 108px;}
       <button class="btn ghost" id="btnShare">➦ மற்றவை / Other</button>
     </div>
     <div id="edFields"></div>
+    <div class="goldrule" style="margin:20px 0 14px"></div>
+    <div class="btnrow" style="margin-bottom:10px">
+      <button class="btn pri" id="edSaveBtn">💾 போஸ்டர் சேமி · Save</button>
+    </div>
+    <button class="btn" id="edBackBtn">← முடிந்தது · Done</button>
     <div style="height:30px"></div>
   </div>
 </div>
@@ -1485,6 +1490,7 @@ function openEditor(tplId, key, fields) {
   PROFILE_KEYS.forEach(k => delete ED.d[k]);
   $('edTitle').textContent = TPL[tplId].name;
   $('edMask').classList.add('on');
+  if (!edPushed) { try { history.pushState({ kp:'editor' }, ''); edPushed = true; } catch (e) {} }
   buildShareRow(); buildSizeChips(); buildFields(); draw();
 }
 const PROFILE_KEYS = ['name','area','phone','brandTag','addr'];
@@ -1493,7 +1499,17 @@ function withProfile(d) {
                                 phone:S.profile.phone, addr:S.profile.addr,
                                 brandTag:S.profile.tag });
 }
-function closeEditor() { $('edMask').classList.remove('on'); }
+let edPushed = false;
+function closeEditor(fromBack) {
+  $('edMask').classList.remove('on');
+  if (edPushed && !fromBack) { edPushed = false; history.back(); }
+  else edPushed = false;
+}
+/* Android back button closes whichever overlay is open instead of leaving the app */
+window.addEventListener('popstate', () => {
+  if ($('edMask').classList.contains('on')) closeEditor(true);
+  else if ($('gMask').classList.contains('on')) closeSheet();
+});
 
 function buildShareRow() {
   $('shareRow').innerHTML = SHARE_TARGETS.map(t =>
@@ -1827,12 +1843,15 @@ $('btnSetPin').onclick = async () => {
   await dbSet('config/pinHash', S.pinHash);
   $('setPin').value = ''; toast('PIN மாற்றப்பட்டது');
 };
-$('edClose').onclick = closeEditor;
+$('edClose').onclick = () => closeEditor();
+$('edBackBtn').onclick = () => closeEditor();
 $('edSave').onclick = savePoster;
+$('edSaveBtn').onclick = savePoster;
 $('btnDl').onclick = downloadPoster;
 $('btnShare').onclick = () => sharePoster();
 $('gClose').onclick = closeSheet;
 $('gMask').onclick = e => { if (e.target === $('gMask')) closeSheet(); };
+$('edMask').onclick = e => { if (e.target === $('edMask')) closeEditor(); };
 $('btnHelp').onclick = () => openSheet('உதவி · Help',
   '<div class="muted" style="line-height:1.65">' +
   '<b>1.</b> "கடை · Shop" பக்கத்தில் கடை பெயர், போன், லோகோ ஒரு முறை சேமியுங்கள். ' +
