@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="app-build" content="20260802-2015">
+<meta name="app-build" content="20260802-2050">
 <meta name="theme-color" content="#14161C">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
@@ -696,7 +696,8 @@ async function saveProfile() {
   try {
     await dbSet('profile', S.profile);
     fillProfileForm();
-    toast('கடை விவரம் சேமிக்கப்பட்டது');
+    renderGallery();          /* previews must show the new shop details at once */
+    toast('கடை விவரம் சேமிக்கப்பட்டது · Saved');
   } catch (e) { toast('சேமிக்க முடியவில்லை. மீண்டும் முயலுங்கள்'); }
 }
 
