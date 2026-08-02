@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="app-build" content="20260802-1930">
+<meta name="app-build" content="20260802-2015">
 <meta name="theme-color" content="#14161C">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
@@ -369,6 +369,7 @@ main{flex:1;padding:16px 16px 108px;}
 <input type="file" id="artFile" accept="image/*" hidden>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 <script>
 /* ==========================================================================
    கடை போஸ்டர் — Kadai Poster
@@ -395,12 +396,32 @@ const SHOP_ID = (new URLSearchParams(location.search).get('id') || 'demo')
                   .toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 40) || 'demo';
 const ROOT = 'shops/' + SHOP_ID;
 
-let db = null, fbOK = false;
+let db = null, fbOK = false, authOK = false;
 try {
   firebase.initializeApp(FB_CONFIG);
   db = firebase.database();
   fbOK = true;
 } catch (e) { fbOK = false; }
+
+/* Anonymous sign-in. Security rules require auth != null, so this must land
+   before any read or write. If it fails the app still runs on local storage. */
+async function ensureAuth() {
+  if (!fbOK) return false;
+  if (authOK) return true;
+  try {
+    if (!firebase.auth().currentUser) {
+      await Promise.race([
+        firebase.auth().signInAnonymously(),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('auth timeout')), 12000))
+      ]);
+    }
+    authOK = true;
+  } catch (e) {
+    authOK = false;
+    logErr('anon auth', e);
+  }
+  return authOK;
+}
 
 /* ---------- state ---------- */
 const S = {
@@ -654,8 +675,10 @@ function fillProfileForm() {
   renderLogoPrev();
   $('tbSub').textContent = S.profile.name || ('கடை: ' + SHOP_ID);
   $('shopMeta').innerHTML =
-    'கடை ஐடி: <b>' + esc(SHOP_ID) + '</b><br>' +
-    'இணைப்பு: ' + (fbOK ? 'Firebase' : 'இந்த சாதனத்தில் மட்டும்');
+    'கடை ஐடி · Shop ID: <b>' + esc(SHOP_ID) + '</b><br>' +
+    'இணைப்பு · Sync: ' + (fbOK && authOK ? 'Firebase ✓'
+      : fbOK ? 'இந்த சாதனத்தில் மட்டும் · this device only'
+             : 'இணைப்பு இல்லை · offline');
 }
 function renderLogoPrev() {
   const el = $('logoPrev');
@@ -1733,7 +1756,7 @@ function renderMine() {
 async function boot() {
   buildPinKeys(); renderPinDots();
 
-  await Promise.all([loadFonts(), loadArt()]);
+  await Promise.all([loadFonts(), loadArt(), ensureAuth()]);
 
   /* profile + config */
   try {
