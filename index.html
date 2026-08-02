@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="app-build" content="20260802-0100">
+<meta name="theme-color" content="#14161C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="கடை போஸ்டர்">
+<title>கடை போஸ்டர் — Kadai Poster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Tamil:wght@400;500;600;700;800&family=Catamaran:wght@400;500;600;700;800;900&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14161C; --ink2:#1C1F27; --ink3:#262A34;
+  --line:#333846; --line2:#454B5C;
+  --paper:#F6F1E7; --txt:#EDEAE3; --txt2:#9AA0AE;
+  --gold:#FF9500; --gold2:#FFB340; --teal:#12A594; --red:#E5484D; --green:#30A46C;
+  --r:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  background:var(--ink); color:var(--txt);
+  font-family:'Anek Tamil','Catamaran',system-ui,sans-serif;
+  font-size:17px; line-height:1.45;
+  overscroll-behavior-y:none; -webkit-font-smoothing:antialiased;
+}
+input,textarea,select,button{font-family:inherit;font-size:inherit;color:inherit;}
+button{background:none;border:none;cursor:pointer;}
+.num{font-family:'Poppins',sans-serif;}
+
+/* ============ App shell ============ */
+#app{min-height:100%;display:flex;flex-direction:column;}
+.topbar{
+  position:sticky;top:0;z-index:40;background:rgba(20,22,28,.94);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:12px;padding:12px 16px;
+  padding-top:calc(12px + env(safe-area-inset-top));
+}
+.topbar .tb-title{font-weight:700;font-size:21px;flex:1;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar .tb-sub{font-size:13px;color:var(--txt2);font-weight:500;}
+.iconbtn{width:40px;height:40px;border-radius:11px;background:var(--ink3);
+  display:flex;align-items:center;justify-content:center;font-size:19px;flex:0 0 40px;}
+.iconbtn:active{background:var(--line);}
+
+main{flex:1;padding:16px 16px 108px;}
+.screen{display:none;} .screen.on{display:block;}
+
+/* ============ Bottom nav ============ */
+.nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:45;
+  background:rgba(20,22,28,.96);backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);display:flex;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.nav button{flex:1;padding:10px 4px 12px;display:flex;flex-direction:column;
+  align-items:center;gap:3px;color:var(--txt2);font-size:13px;font-weight:600;}
+.nav button .ni{font-size:21px;line-height:1;}
+.nav button.on{color:var(--gold);}
+
+/* ============ Cards / lists ============ */
+.card{background:var(--ink2);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px;}
+.card h3{font-size:18px;font-weight:700;margin-bottom:10px;}
+.muted{color:var(--txt2);font-size:15px;}
+.sechead{font-size:14px;font-weight:700;color:var(--txt2);letter-spacing:1.2px;
+  text-transform:uppercase;margin:22px 4px 10px;}
+.sechead:first-child{margin-top:4px;}
+
+/* ============ Buttons ============ */
+.btn{display:flex;align-items:center;justify-content:center;gap:9px;
+  width:100%;padding:15px 18px;border-radius:13px;font-weight:700;font-size:18px;
+  background:var(--ink3);border:1px solid var(--line2);}
+.btn:active{transform:scale(.985);}
+.btn.pri{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#231200;border:none;}
+.btn.teal{background:var(--teal);color:#04231F;border:none;}
+.btn.ghost{background:transparent;}
+.btn.danger{background:transparent;border-color:#5A2326;color:#FF8A8E;}
+.btn.sm{padding:11px 14px;font-size:16px;border-radius:11px;}
+.btnrow{display:flex;gap:10px;} .btnrow .btn{flex:1;}
+
+/* ============ Form fields ============ */
+.fld{margin-bottom:14px;}
+.fld label{display:block;font-size:15px;font-weight:600;color:var(--txt2);margin-bottom:6px;}
+.fld input,.fld textarea,.fld select{
+  width:100%;background:var(--ink3);border:1px solid var(--line2);border-radius:11px;
+  padding:13px 14px;font-size:17px;font-weight:500;color:var(--txt);}
+.fld textarea{resize:vertical;min-height:76px;}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-color:var(--gold);}
+.fld .hint{font-size:13px;color:var(--txt2);margin-top:5px;}
+.fld2{display:flex;gap:10px;} .fld2>*{flex:1;}
+
+/* ============ Template gallery ============ */
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.tcard{background:var(--ink2);border:1px solid var(--line);border-radius:var(--r);
+  overflow:hidden;text-align:left;}
+.tcard:active{border-color:var(--gold);}
+.tcard .tprev{width:100%;aspect-ratio:1;background:var(--ink3);display:block;}
+.tcard .tname{padding:10px 12px 12px;font-weight:700;font-size:16px;line-height:1.25;}
+.tcard .tname small{display:block;color:var(--txt2);font-weight:500;font-size:13px;margin-top:2px;}
+
+/* ============ Editor stage ============ */
+.stage{
+  background:linear-gradient(180deg,#0C0D11,#191C24);
+  border:1px solid var(--line);border-radius:var(--r);
+  padding:16px;display:flex;justify-content:center;margin-bottom:12px;
+}
+.stage canvas{max-width:100%;height:auto;border-radius:6px;
+  box-shadow:0 14px 34px rgba(0,0,0,.6);display:block;}
+.sizechips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:6px;
+  scrollbar-width:none;}
+.sizechips::-webkit-scrollbar{display:none;}
+.chip{flex:0 0 auto;padding:9px 15px;border-radius:999px;background:var(--ink3);
+  border:1px solid var(--line2);font-size:15px;font-weight:600;color:var(--txt2);}
+.chip.on{background:var(--gold);color:#231200;border-color:var(--gold);}
+.goldrule{height:2px;border-radius:2px;margin:0 0 16px;
+  background:linear-gradient(90deg,var(--gold),rgba(255,149,0,0));}
+
+/* feature row editor */
+.frow{display:flex;gap:8px;align-items:center;margin-bottom:9px;}
+.frow .ficon{flex:0 0 54px;height:48px;border-radius:11px;background:var(--ink3);
+  border:1px solid var(--line2);font-size:22px;display:flex;align-items:center;justify-content:center;}
+.frow input{flex:1;background:var(--ink3);border:1px solid var(--line2);border-radius:11px;
+  padding:12px 13px;font-size:16px;min-width:0;}
+.frow .fdel{flex:0 0 40px;height:48px;border-radius:11px;background:transparent;
+  border:1px solid #4A2A2C;color:#FF8A8E;font-size:17px;}
+
+/* colour swatches */
+.swatches{display:flex;gap:9px;flex-wrap:wrap;}
+.sw{width:44px;height:44px;border-radius:12px;border:2px solid transparent;}
+.sw.on{border-color:#fff;box-shadow:0 0 0 2px var(--ink);}
+
+/* art picker */
+.artgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+.artbtn{aspect-ratio:1;border-radius:12px;background:var(--ink3);border:1px solid var(--line2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-size:22px;padding:4px;}
+.artbtn small{font-size:11px;color:var(--txt2);font-weight:600;line-height:1;}
+.artbtn.on{border-color:var(--gold);background:#2A2216;}
+
+/* saved posters */
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.pitem{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);}
+.pitem img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:var(--ink3);}
+.pitem .pbar{display:flex;background:var(--ink2);}
+.pitem .pbar button{flex:1;padding:10px 0;font-size:15px;font-weight:600;color:var(--txt2);}
+.pitem .pbar button+button{border-left:1px solid var(--line);}
+
+/* empty state */
+.empty{text-align:center;padding:44px 20px;}
+.empty .ei{font-size:46px;margin-bottom:10px;}
+.empty h4{font-size:19px;font-weight:700;margin-bottom:6px;}
+.empty p{color:var(--txt2);font-size:16px;margin-bottom:18px;}
+
+/* logo preview */
+.logobox{display:flex;align-items:center;gap:14px;}
+.logoprev{width:72px;height:72px;border-radius:18px;background:var(--ink3);
+  border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;
+  overflow:hidden;flex:0 0 72px;}
+.logoprev img{width:100%;height:100%;object-fit:cover;}
+.logoprev span{font-size:30px;font-weight:800;color:var(--txt2);}
+
+/* ============ Modal ============ */
+.mask{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.62);
+  display:none;align-items:flex-end;backdrop-filter:blur(3px);}
+.mask.on{display:flex;}
+.sheet{background:var(--ink2);width:100%;max-height:88vh;overflow-y:auto;
+  border-radius:20px 20px 0 0;border-top:1px solid var(--line);
+  padding:18px 16px calc(24px + env(safe-area-inset-bottom));}
+.sheet.full{max-height:100vh;height:100vh;border-radius:0;}
+.sheethead{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.sheethead h3{flex:1;font-size:20px;font-weight:700;}
+
+/* ============ PIN ============ */
+#pinScreen{position:fixed;inset:0;z-index:90;background:var(--ink);
+  display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+#pinScreen.on{display:flex;}
+#pinScreen .plogo{font-size:52px;margin-bottom:6px;}
+#pinScreen h2{font-size:26px;font-weight:800;margin-bottom:4px;}
+#pinScreen .psub{color:var(--txt2);font-size:16px;margin-bottom:26px;text-align:center;}
+.pdots{display:flex;gap:16px;margin-bottom:14px;}
+.pdot{width:16px;height:16px;border-radius:50%;background:var(--ink3);border:1px solid var(--line2);}
+.pdot.on{background:var(--gold);border-color:var(--gold);}
+.pmsg{min-height:24px;font-size:15px;font-weight:600;color:var(--txt2);margin-bottom:14px;}
+.pmsg.err{color:#FF8A8E;}
+.pkeys{display:grid;grid-template-columns:repeat(3,84px);gap:14px;}
+.pkey{height:70px;border-radius:18px;background:var(--ink2);border:1px solid var(--line);
+  font-size:27px;font-weight:600;font-family:'Poppins',sans-serif;
+  display:flex;align-items:center;justify-content:center;touch-action:manipulation;}
+.pkey:active{background:var(--ink3);}
+.pkey.blank{background:none;border:none;}
+
+/* ============ Toast ============ */
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);
+  background:#F6F1E7;color:#14161C;padding:13px 20px;border-radius:12px;font-weight:700;
+  font-size:16px;z-index:100;opacity:0;pointer-events:none;transition:.24s;
+  max-width:88vw;text-align:center;box-shadow:0 8px 26px rgba(0,0,0,.5);}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ============ Loader ============ */
+#boot{position:fixed;inset:0;z-index:120;background:var(--ink);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+#boot .bl{font-size:46px;}
+#boot .bt{font-size:20px;font-weight:700;}
+.spin{width:26px;height:26px;border:3px solid var(--line2);border-top-color:var(--gold);
+  border-radius:50%;animation:sp .8s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:2s}}
+
+/* ============ Flash ticker ============ */
+#flash{background:linear-gradient(90deg,var(--gold),var(--gold2));color:#231200;
+  font-weight:700;font-size:15px;padding:8px 0;overflow:hidden;display:none;}
+#flash.on{display:block;}
+#flash span{display:inline-block;white-space:nowrap;padding-left:100%;
+  animation:tick 18s linear infinite;}
+@keyframes tick{to{transform:translateX(-100%)}}
+</style>
+</head>
+<body>
+
+<div id="boot"><div class="bl">🎨</div><div class="bt">கடை போஸ்டர்</div><div class="spin"></div></div>
+
+<!-- ===== PIN ===== -->
+<div id="pinScreen">
+  <div class="plogo">🔒</div>
+  <h2>கடை போஸ்டர்</h2>
+  <div class="psub" id="pinSub">உங்கள் PIN-ஐ உள்ளிடுங்கள்</div>
+  <div class="pdots" id="pinDots"></div>
+  <div class="pmsg" id="pinMsg"></div>
+  <div class="pkeys" id="pinKeys"></div>
+</div>
+
+<!-- ===== App ===== -->
+<div id="app" style="display:none">
+  <div class="topbar">
+    <div style="flex:1;min-width:0">
+      <div class="tb-title" id="tbTitle">கடை போஸ்டர்</div>
+      <div class="tb-sub" id="tbSub"></div>
+    </div>
+    <button class="iconbtn" id="btnHelp">?</button>
+  </div>
+  <div id="flash"><span id="flashTxt"></span></div>
+
+  <main>
+    <!-- NEW -->
+    <div class="screen on" id="scNew">
+      <div class="sechead">புதிய போஸ்டர்</div>
+      <div class="tgrid" id="tplGrid"></div>
+      <div style="height:8px"></div>
+    </div>
+
+    <!-- MINE -->
+    <div class="screen" id="scMine">
+      <div class="sechead">சேமித்த போஸ்டர்கள்</div>
+      <div id="mineWrap"></div>
+    </div>
+
+    <!-- SHOP -->
+    <div class="screen" id="scShop">
+      <div class="sechead">கடை விவரம்</div>
+      <div class="card">
+        <div class="logobox" style="margin-bottom:16px">
+          <div class="logoprev" id="logoPrev"><span>+</span></div>
+          <div style="flex:1">
+            <div style="font-weight:700;margin-bottom:6px">கடை லோகோ</div>
+            <div class="btnrow">
+              <button class="btn sm" id="btnLogo">தேர்வு</button>
+              <button class="btn sm ghost" id="btnLogoDel">நீக்கு</button>
+            </div>
+          </div>
+        </div>
+        <input type="file" id="logoFile" accept="image/*" hidden>
+
+        <div class="fld"><label>கடை பெயர்</label>
+          <input id="pfName" placeholder="உதா: ஸ்ரீ வேல் மொபைல்ஸ்"></div>
+        <div class="fld"><label>டேக்லைன் (சிறு வாசகம்)</label>
+          <input id="pfTag" placeholder="உதா: உங்கள் நம்பிக்கை • எங்கள் சேவை"></div>
+        <div class="fld2">
+          <div class="fld"><label>ஊர் / பகுதி</label><input id="pfArea" placeholder="சங்ககிரி"></div>
+          <div class="fld"><label>போன்</label><input id="pfPhone" class="num" inputmode="tel" placeholder="+91 99948 69502"></div>
+        </div>
+        <div class="fld"><label>WhatsApp (இல்லையெனில் காலி)</label>
+          <input id="pfWa" class="num" inputmode="tel" placeholder="+91 99948 69502"></div>
+        <div class="fld"><label>முகவரி (விசிட்டிங் கார்டுக்கு)</label>
+          <textarea id="pfAddr" placeholder="கடை முகவரி"></textarea></div>
+
+        <div class="fld"><label>பிராண்ட் நிறம்</label>
+          <div class="swatches" id="colorSw"></div>
+          <div class="hint">இந்த நிறம் எல்லா போஸ்டரிலும் தானாக வரும்</div></div>
+
+        <button class="btn pri" id="btnSaveProfile">சேமி</button>
+      </div>
+
+      <div class="sechead">அமைப்பு</div>
+      <div class="card">
+        <div class="fld"><label>PIN மாற்று (4 இலக்கம்)</label>
+          <input id="setPin" class="num" inputmode="numeric" maxlength="4" placeholder="••••"></div>
+        <button class="btn sm" id="btnSetPin">PIN சேமி</button>
+        <div style="height:12px"></div>
+        <div class="muted" id="shopMeta"></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="nav">
+    <button data-sc="scNew" class="on"><span class="ni">✨</span>புதிது</button>
+    <button data-sc="scMine"><span class="ni">🖼️</span>எனது</button>
+    <button data-sc="scShop"><span class="ni">🏪</span>கடை</button>
+  </div>
+</div>
+
+<!-- ===== Editor sheet ===== -->
+<div class="mask" id="edMask">
+  <div class="sheet full" id="edSheet">
+    <div class="sheethead">
+      <button class="iconbtn" id="edClose">✕</button>
+      <h3 id="edTitle">போஸ்டர்</h3>
+      <button class="iconbtn" id="edSave">💾</button>
+    </div>
+    <div class="stage"><canvas id="cv"></canvas></div>
+    <div class="sizechips" id="sizeChips"></div>
+    <div class="goldrule"></div>
+    <div class="btnrow" style="margin-bottom:18px">
+      <button class="btn pri" id="btnDl">⬇ டவுன்லோட்</button>
+      <button class="btn teal" id="btnShare">➦ பகிர்</button>
+    </div>
+    <div id="edFields"></div>
+    <div style="height:30px"></div>
+  </div>
+</div>
+
+<!-- ===== Generic sheet ===== -->
+<div class="mask" id="gMask">
+  <div class="sheet">
+    <div class="sheethead"><h3 id="gTitle"></h3><button class="iconbtn" id="gClose">✕</button></div>
+    <div id="gBody"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<canvas id="cvExport" hidden></canvas>
+<input type="file" id="artFile" accept="image/*" hidden>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script>
+/* ==========================================================================
+   கடை போஸ்டர் — Kadai Poster
+   Multi-tenant Tamil business poster maker.  trackmyapp.in
+   ========================================================================== */
+'use strict';
+
+const FB_CONFIG = {
+  apiKey: "AIzaSyDYaggY8fSwK1TQRfZA6ddl3mvvQVSq0io",
+  authDomain: "kadaiposter-3d43e.firebaseapp.com",
+  databaseURL: "https://kadaiposter-3d43e-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "kadaiposter-3d43e",
+  storageBucket: "kadaiposter-3d43e.firebasestorage.app",
+  messagingSenderId: "6614456415",
+  appId: "1:6614456415:web:69a1bf5d01930eecfd63ea"
+};
+
+/* master admin override PIN — 1973 */
+const MASTER_PIN_HASH = '9baed8fceea6e36d36670d72429d909547165efc038c293a14a41ef2edf83141';
+const DEFAULT_PIN = '1234';
+
+/* shop id from ?id= */
+const SHOP_ID = (new URLSearchParams(location.search).get('id') || 'demo')
+                  .toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 40) || 'demo';
+const ROOT = 'shops/' + SHOP_ID;
+
+let db = null, fbOK = false;
+try {
+  firebase.initializeApp(FB_CONFIG);
+  db = firebase.database();
+  fbOK = true;
+} catch (e) { fbOK = false; }
+
+/* ---------- state ---------- */
+const S = {
+  profile: { name:'', tag:'', area:'', phone:'', wa:'', addr:'', logo:'', color:'#0F4295' },
+  posters: {},
+  config: {},
+  pinHash: null,
+  pinLoaded: false,
+  ready: false
+};
+
+/* ==========================================================================
+   Storage layer — Firebase with a localStorage mirror so the app keeps
+   working when the connection drops.
+   ========================================================================== */
+const LS_KEY = 'kp_' + SHOP_ID;
+
+function lsRead() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch (e) { return {}; }
+}
+function lsWrite(obj) {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(obj)); } catch (e) {}
+}
+function lsPatch(path, val) {
+  const o = lsRead();
+  const parts = path.split('/');
+  let cur = o;
+  for (let i = 0; i < parts.length - 1; i++) {
+    if (typeof cur[parts[i]] !== 'object' || cur[parts[i]] === null) cur[parts[i]] = {};
+    cur = cur[parts[i]];
+  }
+  if (val === null) delete cur[parts[parts.length - 1]];
+  else cur[parts[parts.length - 1]] = val;
+  lsWrite(o);
+}
+
+async function dbSet(path, val) {
+  lsPatch(path, val);
+  if (!fbOK) return;
+  try { await db.ref(ROOT + '/' + path).set(val); }
+  catch (e) { logErr('dbSet ' + path, e); throw e; }
+}
+async function dbPush(path, val) {
+  const key = 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  lsPatch(path + '/' + key, val);
+  if (fbOK) { try { await db.ref(ROOT + '/' + path + '/' + key).set(val); } catch (e) { logErr('dbPush', e); } }
+  return key;
+}
+async function dbGet(path) {
+  if (fbOK) {
+    try {
+      const snap = await db.ref(ROOT + '/' + path).get();
+      if (snap.exists()) return snap.val();
+    } catch (e) { logErr('dbGet ' + path, e); }
+  }
+  const o = lsRead();
+  return path.split('/').reduce((a, k) => (a && a[k] !== undefined ? a[k] : null), o);
+}
+
+/* ==========================================================================
+   Auto Check — background error logging (standing rule, every app)
+   ========================================================================== */
+const AC_KEY = 'kp_autoCheck_lastReview';
+let acBusy = false;
+
+async function logErr(where, err) {
+  if (acBusy) return;
+  acBusy = true;
+  try {
+    const rec = {
+      where: String(where).slice(0, 200),
+      msg: String((err && (err.message || err)) || '').slice(0, 500),
+      stack: String((err && err.stack) || '').slice(0, 900),
+      ua: navigator.userAgent.slice(0, 180),
+      shop: SHOP_ID,
+      at: Date.now(),
+      resolved: false
+    };
+    if (fbOK) await db.ref(ROOT + '/errorLogs').push(rec);
+    else lsPatch('errorLogs/e' + Date.now(), rec);
+  } catch (e) { /* logging must never throw */ }
+  acBusy = false;
+}
+
+window.addEventListener('error', ev => {
+  logErr('window.error', { message: ev.message + ' @' + (ev.filename || '') + ':' + (ev.lineno || 0),
+                           stack: (ev.error && ev.error.stack) || '' });
+});
+window.addEventListener('unhandledrejection', ev => {
+  const r = ev.reason;
+  logErr('unhandledrejection', { message: (r && r.message) || String(r), stack: (r && r.stack) || '' });
+});
+
+async function autoCheckPopup() {
+  const last = +(localStorage.getItem(AC_KEY) || 0);
+  if (Date.now() - last < 3 * 864e5) return;
+  if (!fbOK) return;
+  let logs = {};
+  try {
+    const snap = await db.ref(ROOT + '/errorLogs').limitToLast(40).get();
+    if (snap.exists()) logs = snap.val();
+  } catch (e) { return; }
+  const open = Object.entries(logs).filter(([, v]) => v && !v.resolved);
+  if (!open.length) { localStorage.setItem(AC_KEY, Date.now()); return; }
+
+  const txt = open.map(([, v]) =>
+    new Date(v.at).toLocaleString('en-IN') + '\n' + v.where + '\n' + v.msg).join('\n\n---\n\n');
+
+  openSheet('Auto Check — ' + open.length + ' பிழை',
+    '<div class="muted" style="margin-bottom:12px">இவை பயன்பாட்டில் பதிவான பிழைகள்.</div>' +
+    '<textarea readonly style="width:100%;height:190px;background:var(--ink3);border:1px solid var(--line2);' +
+    'border-radius:11px;padding:12px;font-size:13px;font-family:monospace">' +
+    txt.replace(/[<>]/g, '') + '</textarea>' +
+    '<div class="btnrow" style="margin-top:12px">' +
+    '<button class="btn sm" id="acCopy">நகல்</button>' +
+    '<button class="btn sm pri" id="acDone">பார்த்தாச்சு</button></div>');
+
+  document.getElementById('acCopy').onclick = () => { copyText(txt); toast('நகல் எடுக்கப்பட்டது'); };
+  document.getElementById('acDone').onclick = async () => {
+    for (const [k] of open) { try { await db.ref(ROOT + '/errorLogs/' + k + '/resolved').set(true); } catch (e) {} }
+    localStorage.setItem(AC_KEY, Date.now());
+    closeSheet(); toast('சரி');
+  };
+}
+
+/* ==========================================================================
+   Small helpers
+   ========================================================================== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
+  c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+let toastT = null;
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2400);
+}
+function copyText(t) {
+  if (navigator.clipboard) { navigator.clipboard.writeText(t).catch(() => {}); return; }
+  const ta = document.createElement('textarea');
+  ta.value = t; document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  ta.remove();
+}
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+function openSheet(title, html) {
+  $('gTitle').textContent = title; $('gBody').innerHTML = html; $('gMask').classList.add('on');
+}
+function closeSheet() { $('gMask').classList.remove('on'); }
+
+/* ==========================================================================
+   PIN lock
+   ========================================================================== */
+let pinBuf = '';
+
+function renderPinDots() {
+  $('pinDots').innerHTML = [0,1,2,3].map(i =>
+    '<div class="pdot' + (i < pinBuf.length ? ' on' : '') + '"></div>').join('');
+}
+function pinMsg(txt, isErr) {
+  const m = $('pinMsg'); m.textContent = txt || '';
+  m.classList.toggle('err', !!isErr);
+}
+
+function buildPinKeys() {
+  const keys = ['1','2','3','4','5','6','7','8','9','','0','⌫'];
+  $('pinKeys').innerHTML = keys.map(k =>
+    k === '' ? '<div class="pkey blank"></div>'
+             : '<button class="pkey" data-k="' + k + '">' + k + '</button>').join('');
+
+  /* Touch fires touchend then a synthetic click. Handle touchend for instant
+     response and suppress only that paired click — never a later real tap. */
+  let lastTouch = 0;
+  $('pinKeys').querySelectorAll('.pkey[data-k]').forEach(btn => {
+    btn.addEventListener('touchend', ev => {
+      ev.preventDefault();
+      lastTouch = Date.now();
+      pinTap(btn.dataset.k);
+    }, { passive: false });
+    btn.addEventListener('click', () => {
+      if (Date.now() - lastTouch < 700) return;   /* paired synthetic click */
+      pinTap(btn.dataset.k);
+    });
+  });
+}
+
+async function pinTap(k) {
+  if (k === '⌫') { pinBuf = pinBuf.slice(0, -1); renderPinDots(); pinMsg(''); return; }
+  if (pinBuf.length >= 4) return;
+  pinBuf += k; renderPinDots();
+  if (pinBuf.length < 4) return;
+
+  /* race guard: hash may still be loading from Firebase on a slow connection */
+  if (!S.pinLoaded) {
+    pinMsg('ஏற்றுகிறது, சற்று பொறுங்கள்…');
+    const t0 = Date.now();
+    while (!S.pinLoaded && Date.now() - t0 < 6000) await new Promise(r => setTimeout(r, 120));
+    if (!S.pinLoaded) { pinMsg('இணைப்பு இல்லை. மீண்டும் முயலுங்கள்', true); pinBuf = ''; renderPinDots(); return; }
+    pinMsg('');
+  }
+
+  const h = await sha256(pinBuf);
+  if (h === S.pinHash || h === MASTER_PIN_HASH) {
+    sessionStorage.setItem('kp_unlocked', '1');
+    $('pinScreen').classList.remove('on');
+    $('app').style.display = 'flex';
+    pinBuf = ''; renderPinDots(); pinMsg('');
+    setTimeout(autoCheckPopup, 2500);
+  } else {
+    pinMsg('தவறான PIN', true);
+    pinBuf = ''; renderPinDots();
+    if (navigator.vibrate) navigator.vibrate(60);
+  }
+}
+
+/* ==========================================================================
+   Profile
+   ========================================================================== */
+const BRAND_COLORS = ['#0F4295','#10763A','#B32E0C','#6D28D9','#B45309',
+                      '#0E7490','#BE185D','#15803D','#1F2937','#A16207'];
+
+function renderSwatches() {
+  $('colorSw').innerHTML = BRAND_COLORS.map(c =>
+    '<button class="sw' + (S.profile.color === c ? ' on' : '') + '" data-c="' + c +
+    '" style="background:' + c + '"></button>').join('');
+  $('colorSw').querySelectorAll('.sw').forEach(b => b.onclick = () => {
+    S.profile.color = b.dataset.c; renderSwatches();
+  });
+}
+
+function fillProfileForm() {
+  $('pfName').value  = S.profile.name  || '';
+  $('pfTag').value   = S.profile.tag   || '';
+  $('pfArea').value  = S.profile.area  || '';
+  $('pfPhone').value = S.profile.phone || '';
+  $('pfWa').value    = S.profile.wa    || '';
+  $('pfAddr').value  = S.profile.addr  || '';
+  renderSwatches();
+  renderLogoPrev();
+  $('tbSub').textContent = S.profile.name || ('கடை: ' + SHOP_ID);
+  $('shopMeta').innerHTML =
+    'கடை ஐடி: <b>' + esc(SHOP_ID) + '</b><br>' +
+    'இணைப்பு: ' + (fbOK ? 'Firebase' : 'இந்த சாதனத்தில் மட்டும்');
+}
+function renderLogoPrev() {
+  const el = $('logoPrev');
+  if (S.profile.logo) el.innerHTML = '<img src="' + S.profile.logo + '" alt="">';
+  else el.innerHTML = '<span>' + esc((S.profile.name || '+').trim().charAt(0) || '+') + '</span>';
+}
+
+async function saveProfile() {
+  S.profile.name  = $('pfName').value.trim();
+  S.profile.tag   = $('pfTag').value.trim();
+  S.profile.area  = $('pfArea').value.trim();
+  S.profile.phone = $('pfPhone').value.trim();
+  S.profile.wa    = $('pfWa').value.trim();
+  S.profile.addr  = $('pfAddr').value.trim();
+  try {
+    await dbSet('profile', S.profile);
+    fillProfileForm();
+    toast('கடை விவரம் சேமிக்கப்பட்டது');
+  } catch (e) { toast('சேமிக்க முடியவில்லை. மீண்டும் முயலுங்கள்'); }
+}
+
+/* resize an uploaded image down before storing it */
+function readImageResized(file, maxSide) {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onerror = () => reject(new Error('read failed'));
+    fr.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('decode failed'));
+      img.onload = () => {
+        const sc = Math.min(1, maxSide / Math.max(img.width, img.height));
+        const w = Math.round(img.width * sc), h = Math.round(img.height * sc);
+        const c = document.createElement('canvas'); c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(c.toDataURL('image/jpeg', 0.86));
+      };
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+
+/* ==========================================================================
+   Routing
+   ========================================================================== */
+function go(sc) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === sc));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('on', b.dataset.sc === sc));
+  if (sc === 'scMine') renderMine();
+  window.scrollTo(0, 0);
+}
+/* ==========================================================================
+   Rendering engine
+   Every template draws into a 1080x1080 square space. Larger canvases reuse
+   the same body and simply extend the background, so no layout can break.
+   ========================================================================== */
+const SQ = 1080;
+const SIZES = [
+  { id:'post',  label:'போஸ்ட் 1:1',  w:1080, h:1080 },
+  { id:'story', label:'ஸ்டோரி / ஸ்டேட்டஸ', w:1080, h:1920 },
+  { id:'hd',    label:'HD பிரிண்ட்', w:2160, h:2160 }
+];
+
+const FONT_T = '"Anek Tamil","Catamaran",sans-serif';
+const FONT_N = '"Poppins",sans-serif';
+
+let fontsReady = false;
+async function loadFonts() {
+  if (!document.fonts) { fontsReady = true; return; }
+  const want = ['800 100px "Anek Tamil"','700 100px "Anek Tamil"','600 100px "Anek Tamil"',
+                '700 100px "Poppins"','800 100px "Poppins"','700 100px "Catamaran"'];
+  try { await Promise.all(want.map(f => document.fonts.load(f, 'அ0'))); await document.fonts.ready; }
+  catch (e) { logErr('loadFonts', e); }
+  fontsReady = true;
+}
+
+/* ---------- colour ---------- */
+function hexToRgb(h) {
+  h = h.replace('#',''); if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+}
+function rgbToHsl(r,g,b) {
+  r/=255; g/=255; b/=255;
+  const mx = Math.max(r,g,b), mn = Math.min(r,g,b); let h=0, s=0; const l = (mx+mn)/2;
+  if (mx !== mn) {
+    const d = mx - mn;
+    s = l > .5 ? d/(2-mx-mn) : d/(mx+mn);
+    h = mx === r ? ((g-b)/d + (g<b?6:0)) : mx === g ? ((b-r)/d + 2) : ((r-g)/d + 4);
+    h /= 6;
+  }
+  return [h,s,l];
+}
+function hslHex(h,s,l) {
+  const f = n => {
+    const k = (n + h*12) % 12, a = s*Math.min(l,1-l);
+    const c = l - a*Math.max(-1, Math.min(k-3, Math.min(9-k,1)));
+    return Math.round(255*c).toString(16).padStart(2,'0');
+  };
+  return '#' + f(0) + f(8) + f(4);
+}
+function pal(base) {
+  let hsl; try { hsl = rgbToHsl(...hexToRgb(base)); } catch (e) { hsl = rgbToHsl(15,66,149); }
+  const [h,s0,l0] = hsl;
+  const s = Math.max(.38, Math.min(s0, .92));
+  return {
+    deep: hslHex(h, Math.min(s+.08,1), Math.max(l0-.24,.05)),
+    d1:   hslHex(h, Math.min(s+.04,1), Math.max(l0-.14,.09)),
+    mid:  base,
+    lt:   hslHex(h, s, Math.min(l0+.13,.58)),
+    hi:   hslHex(h, Math.min(s+.10,1), Math.min(l0+.30,.72)),
+    gold:'#FDE047', gold2:'#F0A70C', goldD:'#8A4B02',
+    cream:'#FFF6DC', paper:'#FFFFFF'
+  };
+}
+
+/* ---------- canvas primitives ---------- */
+function rr(ctx,x,y,w,h,r) {
+  r = Math.min(r, w/2, h/2);
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+function lg(ctx,x0,y0,x1,y1,stops) {
+  const g = ctx.createLinearGradient(x0,y0,x1,y1);
+  stops.forEach(([o,c]) => g.addColorStop(o,c));
+  return g;
+}
+function font(w,size,fam) { return w + ' ' + size + 'px ' + (fam || FONT_T); }
+
+/* shrink until it fits one line */
+function fitSize(ctx, text, maxW, start, min, weight, fam) {
+  let s = start;
+  while (s > min) {
+    ctx.font = font(weight, s, fam);
+    if (ctx.measureText(text).width <= maxW) break;
+    s -= 2;
+  }
+  return s;
+}
+/* wrap into <=maxLines, shrinking if needed */
+function wrapFit(ctx, text, maxW, start, min, weight, maxLines, fam) {
+  const words = String(text || '').trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return { lines: [], size: start };
+  let s = start;
+  for (; s > min; s -= 2) {
+    ctx.font = font(weight, s, fam);
+    const lines = []; let cur = '';
+    let bad = false;
+    for (const w of words) {
+      const t = cur ? cur + ' ' + w : w;
+      if (ctx.measureText(t).width <= maxW) { cur = t; }
+      else {
+        if (cur) lines.push(cur);
+        cur = w;
+        if (ctx.measureText(w).width > maxW) { bad = true; break; }
+      }
+    }
+    if (bad) continue;
+    if (cur) lines.push(cur);
+    if (lines.length <= maxLines) return { lines, size: s };
+  }
+  ctx.font = font(weight, min, fam);
+  return { lines: [String(text)], size: min };
+}
+
+/* big gradient headline with a dark relief edge */
+function headline(ctx, text, cx, top, maxW, maxSize, P, maxLines) {
+  const r = wrapFit(ctx, text, maxW, maxSize, 34, '800', maxLines || 2, FONT_T);
+  if (!r.lines.length) return top;
+  const lh = r.size * 1.03;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  r.lines.forEach((ln, i) => {
+    const y = top + i * lh;
+    ctx.font = font('800', r.size, FONT_T);
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 22; ctx.shadowOffsetY = 10;
+    ctx.fillStyle = P.goldD;
+    ctx.fillText(ln, cx, y + Math.max(4, r.size * 0.045));
+    ctx.restore();
+    const g = lg(ctx, 0, y, 0, y + r.size, [[0,'#FFF9E3'],[.42,P.gold],[.88,P.gold2],[1,'#FFEFC0']]);
+    ctx.fillStyle = g;
+    ctx.fillText(ln, cx, y);
+  });
+  return top + r.lines.length * lh;
+}
+
+/* plain wrapped text */
+function para(ctx, text, cx, top, maxW, size, color, weight, maxLines, align) {
+  const r = wrapFit(ctx, text, maxW, size, 16, weight || '600', maxLines || 2, FONT_T);
+  ctx.textAlign = align || 'center'; ctx.textBaseline = 'top';
+  ctx.fillStyle = color;
+  const lh = r.size * 1.24;
+  r.lines.forEach((ln, i) => { ctx.font = font(weight||'600', r.size, FONT_T); ctx.fillText(ln, cx, top + i*lh); });
+  return top + r.lines.length * lh;
+}
+
+/* footer bar: area + phone */
+function footerBar(ctx, P, d, y, h) {
+  const area = (d.area || '').trim(), phone = (d.phone || '').trim();
+  if (!area && !phone) return;
+  ctx.fillStyle = lg(ctx, 0, y, 0, y+h, [[0,P.gold],[1,P.gold2]]);
+  ctx.fillRect(0, y, SQ, h);
+  ctx.fillStyle = 'rgba(0,0,0,.16)'; ctx.fillRect(0, y, SQ, 3);
+
+  const cy = y + h/2;
+  ctx.textBaseline = 'middle';
+  const aSize = area  ? fitSize(ctx, area,  380, 40, 22, '700', FONT_T) : 0;
+  const pSize = phone ? fitSize(ctx, phone, 430, 38, 22, '700', FONT_N) : 0;
+  ctx.font = font('700', aSize, FONT_T); const aw = area ? ctx.measureText(area).width : 0;
+  ctx.font = font('700', pSize, FONT_N); const pw = phone ? ctx.measureText(phone).width : 0;
+
+  const icon = 46, gap = 14, sep = (area && phone) ? 46 : 0;
+  const total = (area ? icon+gap+aw : 0) + sep + (phone ? icon+gap+pw : 0);
+  let x = (SQ - total) / 2;
+
+  const dot = (px) => {
+    ctx.beginPath(); ctx.arc(px + icon/2, cy, icon/2, 0, 7); ctx.fillStyle = P.deep; ctx.fill();
+  };
+  if (area) {
+    dot(x);
+    ctx.fillStyle = P.gold; ctx.font = font('700', 22, FONT_T);
+    ctx.textAlign = 'center'; ctx.fillText('◉', x + icon/2, cy + 1);
+    ctx.textAlign = 'left'; ctx.fillStyle = P.deep;
+    ctx.font = font('700', aSize, FONT_T); ctx.fillText(area, x + icon + gap, cy);
+    x += icon + gap + aw + sep;
+  }
+  if (phone) {
+    dot(x);
+    ctx.fillStyle = P.gold; ctx.font = font('700', 21, FONT_T);
+    ctx.textAlign = 'center'; ctx.fillText('✆', x + icon/2, cy + 1);
+    ctx.textAlign = 'left'; ctx.fillStyle = P.deep;
+    ctx.font = font('700', pSize, FONT_N); ctx.fillText(phone, x + icon + gap, cy);
+  }
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+}
+
+/* brand row: logo + shop name */
+function brandRow(ctx, P, d, y, align) {
+  const name = (d.name || '').trim();
+  const tag  = (d.brandTag || '').trim();   /* shop tagline, NOT the poster's own tag */
+  const box = 76;
+  const nSize = name ? fitSize(ctx, name, 700, 40, 22, '700', FONT_T) : 0;
+  ctx.font = font('700', nSize, FONT_T);
+  const nw = name ? ctx.measureText(name).width : 0;
+  const total = box + 18 + nw;
+  let x = align === 'left' ? 56 : (SQ - total) / 2;
+
+  /* logo tile */
+  ctx.save();
+  rr(ctx, x, y, box, box, 20);
+  ctx.fillStyle = lg(ctx, x, y, x+box, y+box, [[0,P.gold],[1,P.gold2]]);
+  ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 5;
+  ctx.fill(); ctx.restore();
+  if (ART.logo && ART.logo.complete && ART.logo.naturalWidth) {
+    ctx.save(); rr(ctx, x, y, box, box, 20); ctx.clip();
+    ctx.drawImage(ART.logo, x, y, box, box); ctx.restore();
+  } else {
+    ctx.fillStyle = P.deep; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = font('800', 42, FONT_T);
+    ctx.fillText((name || 'க').trim().charAt(0), x + box/2, y + box/2 + 2);
+  }
+
+  ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  ctx.fillStyle = P.cream; ctx.font = font('700', nSize, FONT_T);
+  ctx.fillText(name, x + box + 18, y + (tag ? 4 : box/2 - nSize*0.62));
+  if (tag) {
+    const tSize = fitSize(ctx, tag, 640, 22, 14, '600', FONT_T);
+    ctx.fillStyle = P.hi; ctx.font = font('600', tSize, FONT_T);
+    ctx.fillText(tag, x + box + 18, y + 6 + nSize * 1.12);
+  }
+  ctx.textBaseline = 'alphabetic';
+  return y + box;
+}
+
+/* circular corner badge */
+function badge(ctx, P, l1, l2, l3, cx, cy, r) {
+  if (!l1 && !l2 && !l3) return;
+  ctx.save();
+  ctx.translate(cx, cy); ctx.rotate(-9 * Math.PI/180);
+  ctx.beginPath(); ctx.arc(0,0,r,0,7);
+  ctx.fillStyle = lg(ctx,-r,-r,r,r,[[0,'#FDE047'],[.7,P.gold2],[1,'#C77C05']]);
+  ctx.shadowColor='rgba(0,0,0,.45)'; ctx.shadowBlur=22; ctx.shadowOffsetY=8; ctx.fill();
+  ctx.restore();
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(-9*Math.PI/180);
+  ctx.beginPath(); ctx.arc(0,0,r-5,0,7);
+  ctx.strokeStyle='rgba(255,255,255,.45)'; ctx.lineWidth=5; ctx.stroke();
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  const w = r*1.55;
+  let y = -(l1?1:0)*24 - (l3?10:0);
+  if (l1) { const s=fitSize(ctx,l1,w,30,14,'700',FONT_T); ctx.font=font('700',s,FONT_T);
+            ctx.fillStyle=P.deep; ctx.fillText(l1,0,y); y += s*0.95; }
+  if (l2) { const s=fitSize(ctx,l2,w,52,20,'700',FONT_N); ctx.font=font('700',s,FONT_N);
+            ctx.fillStyle='#7A1C05'; ctx.fillText(l2,0,y + s*0.42); y += s*0.92; }
+  if (l3) { const s=fitSize(ctx,l3,w,28,13,'700',FONT_T); ctx.font=font('700',s,FONT_T);
+            ctx.fillStyle=P.deep; ctx.fillText(l3,0,y + 10); }
+  ctx.restore();
+  ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+}
+
+/* ==========================================================================
+   Artwork — vector, so no photo is required and Tamil text stays crisp
+   ========================================================================== */
+const ART_SVG = {
+  pongal: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 340">
+   <g><rect x="126" y="20" width="19" height="300" rx="4" fill="#4E9A3E" transform="rotate(-13 135 170)"/>
+   <rect x="472" y="20" width="19" height="300" rx="4" fill="#4E9A3E" transform="rotate(13 481 170)"/>
+   <path d="M132 36 Q92 -2 58 16 Q98 30 130 50Z" fill="#57A845" transform="rotate(-13 135 170)"/>
+   <path d="M143 32 Q178 -8 214 8 Q176 24 148 50Z" fill="#4A9439" transform="rotate(-13 135 170)"/>
+   <path d="M488 36 Q528 -2 562 16 Q522 30 490 50Z" fill="#57A845" transform="rotate(13 481 170)"/>
+   <path d="M477 32 Q442 -8 406 8 Q444 24 472 50Z" fill="#4A9439" transform="rotate(13 481 170)"/></g>
+   <path d="M228 160 Q222 106 250 84 Q262 118 258 156Z" fill="#FFFDF4"/>
+   <path d="M392 160 Q398 106 370 84 Q358 118 362 156Z" fill="#FFFDF4"/>
+   <ellipse cx="310" cy="162" rx="96" ry="34" fill="#FFFDF4"/>
+   <circle cx="250" cy="74" r="12" fill="#FFFDF4"/><circle cx="372" cy="72" r="10" fill="#FFFDF4"/>
+   <circle cx="286" cy="56" r="8" fill="#FFFDF4"/><circle cx="336" cy="50" r="7" fill="#FFFDF4"/>
+   <path d="M198 188 Q184 278 240 316 Q310 346 380 316 Q436 278 422 188 Z" fill="#C8552A"/>
+   <path d="M198 188 Q184 278 240 316 Q290 338 310 338 L310 188Z" fill="#D9663A"/>
+   <ellipse cx="310" cy="188" rx="112" ry="30" fill="#A83E1C"/>
+   <ellipse cx="310" cy="182" rx="112" ry="30" fill="#E07642"/>
+   <ellipse cx="310" cy="182" rx="88" ry="21" fill="#8E3316"/>
+   <rect x="196" y="206" width="228" height="17" rx="8" fill="#F5C518"/>
+   <rect x="200" y="248" width="220" height="9" rx="4" fill="#FFD86B"/>
+   <path d="M214 272 q24 -16 48 0 q24 16 48 0 q24 -16 48 0 q24 16 48 0" stroke="#FFE8A8" stroke-width="6" fill="none" stroke-linecap="round"/>
+   <ellipse cx="252" cy="242" rx="20" ry="46" fill="#fff" opacity=".14"/></svg>`,
+
+  diya: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 340">
+   <g id="d"><path d="M0 0 q0 -46 -14 -70 q-10 24 -10 44 q0 16 24 26Z" fill="#FFD24A"/>
+   <path d="M0 -6 q0 -30 -8 -46 q-7 16 -7 30 q0 11 15 16Z" fill="#FFF3B0"/></g>
+   <g transform="translate(150,196)"><use href="#d"/>
+     <path d="M-84 0 q84 62 168 0 q-22 26 -84 26 q-62 0 -84 -26Z" fill="#B4491C"/>
+     <ellipse cx="0" cy="0" rx="84" ry="20" fill="#E0672C"/>
+     <ellipse cx="0" cy="-3" rx="60" ry="12" fill="#7E2E10"/></g>
+   <g transform="translate(310,150) scale(1.28)"><use href="#d"/>
+     <path d="M-84 0 q84 62 168 0 q-22 26 -84 26 q-62 0 -84 -26Z" fill="#B4491C"/>
+     <ellipse cx="0" cy="0" rx="84" ry="20" fill="#E0672C"/>
+     <ellipse cx="0" cy="-3" rx="60" ry="12" fill="#7E2E10"/></g>
+   <g transform="translate(470,196)"><use href="#d"/>
+     <path d="M-84 0 q84 62 168 0 q-22 26 -84 26 q-62 0 -84 -26Z" fill="#B4491C"/>
+     <ellipse cx="0" cy="0" rx="84" ry="20" fill="#E0672C"/>
+     <ellipse cx="0" cy="-3" rx="60" ry="12" fill="#7E2E10"/></g>
+   <g fill="#FFD86B" opacity=".85">
+     <circle cx="80" cy="70" r="6"/><circle cx="540" cy="60" r="7"/><circle cx="248" cy="40" r="5"/>
+     <circle cx="392" cy="46" r="6"/><circle cx="596" cy="150" r="5"/><circle cx="30" cy="140" r="5"/></g></svg>`,
+
+  gift: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 340">
+   <rect x="180" y="150" width="260" height="176" rx="14" fill="#D63B42"/>
+   <rect x="180" y="150" width="260" height="176" rx="14" fill="url(#gg)" opacity=".0"/>
+   <rect x="164" y="118" width="292" height="60" rx="12" fill="#F0555C"/>
+   <rect x="288" y="118" width="44" height="208" fill="#FFD24A"/>
+   <rect x="164" y="140" width="292" height="16" fill="#FFD24A"/>
+   <path d="M310 118 q-70 -12 -70 -52 q0 -26 30 -26 q40 0 40 78Z" fill="#FFD24A"/>
+   <path d="M310 118 q70 -12 70 -52 q0 -26 -30 -26 q-40 0 -40 78Z" fill="#FFC219"/>
+   <circle cx="310" cy="104" r="18" fill="#FFE07A"/>
+   <g fill="#FFF3B0" opacity=".9"><circle cx="120" cy="90" r="7"/><circle cx="512" cy="80" r="8"/>
+   <circle cx="86" cy="240" r="6"/><circle cx="548" cy="230" r="6"/></g></svg>`,
+
+  phone: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 340">
+   <g transform="translate(330,26) rotate(9)">
+     <rect x="0" y="0" width="150" height="292" rx="24" fill="#94A3B8"/>
+     <rect x="6" y="6" width="138" height="280" rx="20" fill="#0F172A"/>
+     <rect x="10" y="10" width="130" height="272" rx="17" fill="#38BDF8"/>
+     <rect x="52" y="16" width="42" height="9" rx="5" fill="#0F172A"/></g>
+   <g transform="translate(150,52) rotate(-7)">
+     <rect x="0" y="0" width="162" height="300" rx="26" fill="#CBD5E1"/>
+     <rect x="6" y="6" width="150" height="288" rx="22" fill="#0B1220"/>
+     <rect x="10" y="10" width="142" height="280" rx="19" fill="#2563EB"/>
+     <rect x="58" y="17" width="46" height="10" rx="5" fill="#0B1220"/>
+     <g fill="#FDE047"><rect x="46" y="212" width="12" height="16" rx="3"/>
+     <rect x="64" y="202" width="12" height="26" rx="3"/><rect x="82" y="190" width="12" height="38" rx="3"/>
+     <rect x="100" y="176" width="12" height="52" rx="3"/></g>
+     <rect x="34" y="118" width="94" height="12" rx="6" fill="#fff" opacity=".55"/>
+     <rect x="50" y="142" width="62" height="9" rx="4" fill="#fff" opacity=".35"/></g></svg>`,
+
+  house: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 340">
+   <rect x="150" y="170" width="320" height="150" rx="8" fill="#F1F5F9"/>
+   <rect x="150" y="170" width="320" height="150" rx="8" fill="#E2E8F0" opacity=".6"/>
+   <path d="M120 176 L310 52 L500 176Z" fill="#C0392B"/>
+   <path d="M310 52 L500 176 L310 176Z" fill="#A93226"/>
+   <rect x="286" y="232" width="58" height="88" rx="4" fill="#8B5E3C"/>
+   <circle cx="332" cy="278" r="5" fill="#FFD24A"/>
+   <g fill="#7DD3FC"><rect x="184" y="204" width="66" height="54" rx="5"/><rect x="384" y="204" width="66" height="54" rx="5"/></g>
+   <g stroke="#F1F5F9" stroke-width="4"><line x1="217" y1="204" x2="217" y2="258"/><line x1="184" y1="231" x2="250" y2="231"/>
+   <line x1="417" y1="204" x2="417" y2="258"/><line x1="384" y1="231" x2="450" y2="231"/></g>
+   <rect x="120" y="316" width="380" height="12" rx="6" fill="#4E9A3E"/>
+   <path d="M470 60 l10 24 24 10 -24 10 -10 24 -10 -24 -24 -10 24 -10Z" fill="#FDE047"/></svg>`,
+
+  cake: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 340">
+   <ellipse cx="310" cy="318" rx="190" ry="20" fill="#00000022"/>
+   <rect x="140" y="212" width="340" height="102" rx="14" fill="#F3D5A5"/>
+   <path d="M140 224 q30 34 58 0 q30 34 58 0 q30 34 58 0 q30 34 58 0 q30 34 58 0 q22 26 50 0 v-20 H140Z" fill="#8B4513"/>
+   <rect x="172" y="140" width="276" height="86" rx="12" fill="#FBE3B8"/>
+   <path d="M172 152 q26 30 50 0 q26 30 50 0 q26 30 50 0 q26 30 50 0 q26 30 50 0 q20 22 26 0 v-16 H172Z" fill="#A0522D"/>
+   <g><rect x="298" y="92" width="10" height="48" rx="4" fill="#E8557E"/>
+   <path d="M303 92 q-12 -14 0 -28 q12 14 0 28Z" fill="#FFC219"/></g>
+   <g fill="#E8557E"><circle cx="212" cy="188" r="9"/><circle cx="266" cy="182" r="8"/>
+   <circle cx="356" cy="184" r="8"/><circle cx="408" cy="190" r="9"/></g>
+   <g fill="#FF5A5F"><circle cx="196" cy="252" r="11"/><circle cx="424" cy="252" r="11"/></g></svg>`,
+
+  cart: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 340">
+   <path d="M132 96 h56 l44 154 h216 l44 -110 H208" stroke="#FDE047" stroke-width="16"
+     fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+   <circle cx="256" cy="292" r="24" fill="#FDE047"/><circle cx="416" cy="292" r="24" fill="#FDE047"/>
+   <g><rect x="252" y="120" width="60" height="60" rx="8" fill="#4E9A3E"/>
+   <rect x="322" y="106" width="60" height="74" rx="8" fill="#E0672C"/>
+   <rect x="392" y="128" width="52" height="52" rx="8" fill="#38BDF8"/></g>
+   <path d="M470 60 l9 22 22 9 -22 9 -9 22 -9 -22 -22 -9 22 -9Z" fill="#FFF3B0"/></svg>`,
+
+  star: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 340">
+   <g fill="#FDE047"><path d="M310 40 l34 92 96 6 -74 62 24 94 -80 -54 -80 54 24 -94 -74 -62 96 -6Z"/></g>
+   <g fill="#FFF3B0" opacity=".9">
+     <path d="M132 96 l16 40 42 4 -32 28 10 42 -36 -24 -36 24 10 -42 -32 -28 42 -4Z"/>
+     <path d="M492 116 l14 34 36 4 -28 24 9 36 -31 -21 -31 21 9 -36 -28 -24 36 -4Z"/></g>
+   <g fill="#FFD86B"><circle cx="96" cy="252" r="9"/><circle cx="524" cy="248" r="10"/>
+   <circle cx="200" cy="300" r="7"/><circle cx="420" cy="304" r="7"/></g></svg>`
+};
+
+const ART_LIST = [
+  { id:'none',    ic:'∅',  label:'இல்லை' },
+  { id:'photo',   ic:'📷', label:'படம்' },
+  { id:'pongal',  ic:'🌾', label:'பொங்கல்' },
+  { id:'diya',    ic:'🪔', label:'தீபம்' },
+  { id:'gift',    ic:'🎁', label:'பரிசு' },
+  { id:'phone',   ic:'📱', label:'மொபைல்' },
+  { id:'house',   ic:'🏠', label:'வீடு' },
+  { id:'cake',    ic:'🎂', label:'கேக்' },
+  { id:'cart',    ic:'🛒', label:'கடை' },
+  { id:'star',    ic:'⭐', label:'நட்சத்திரம்' }
+];
+
+const ART = {};          /* id -> HTMLImageElement */
+function svgImg(svg) {
+  const im = new Image();
+  im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  return im;
+}
+async function loadArt() {
+  const jobs = [];
+  for (const k in ART_SVG) {
+    const im = svgImg(ART_SVG[k]); ART[k] = im;
+    jobs.push(new Promise(res => { im.onload = res; im.onerror = res; }));
+  }
+  await Promise.all(jobs);
+}
+function setLogoImg(dataUrl) {
+  return new Promise(res => {
+    if (!dataUrl) { ART.logo = null; return res(); }
+    const im = new Image(); im.onload = () => { ART.logo = im; res(); };
+    im.onerror = () => { ART.logo = null; res(); }; im.src = dataUrl;
+  });
+}
+function setPhotoImg(dataUrl) {
+  return new Promise(res => {
+    if (!dataUrl) { ART.photo = null; return res(); }
+    const im = new Image(); im.onload = () => { ART.photo = im; res(); };
+    im.onerror = () => { ART.photo = null; res(); }; im.src = dataUrl;
+  });
+}
+/* draw art centred in a box, preserving aspect */
+function drawArt(ctx, id, x, y, w, h) {
+  const im = (id === 'photo') ? ART.photo : ART[id];
+  if (!im || !im.complete || !im.naturalWidth) return;
+  const sc = Math.min(w/im.naturalWidth, h/im.naturalHeight);
+  const dw = im.naturalWidth*sc, dh = im.naturalHeight*sc;
+  ctx.drawImage(im, x + (w-dw)/2, y + (h-dh)/2, dw, dh);
+}
+
+/* ==========================================================================
+   Shared backgrounds
+   ========================================================================== */
+function bgRadiant(ctx, W, H, P) {
+  const g = ctx.createRadialGradient(W/2, H*0.33, 30, W/2, H*0.33, Math.max(W,H)*0.92);
+  g.addColorStop(0, P.hi); g.addColorStop(.28, P.lt);
+  g.addColorStop(.58, P.mid); g.addColorStop(.82, P.d1); g.addColorStop(1, P.deep);
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+  /* radiating rays */
+  ctx.save(); ctx.translate(W/2, H*0.33);
+  for (let i = 0; i < 40; i++) {
+    ctx.rotate(Math.PI*2/40);
+    ctx.beginPath(); ctx.moveTo(0,0);
+    ctx.arc(0,0, Math.max(W,H)*1.2, -0.043, 0.043);
+    ctx.closePath(); ctx.fillStyle = 'rgba(255,224,150,.055)'; ctx.fill();
+  }
+  ctx.restore();
+  const v = ctx.createRadialGradient(W/2,H*0.42,W*0.30, W/2,H*0.42, Math.max(W,H)*0.78);
+  v.addColorStop(0,'rgba(0,0,0,0)'); v.addColorStop(1,'rgba(0,0,0,.42)');
+  ctx.fillStyle = v; ctx.fillRect(0,0,W,H);
+}
+function bgTech(ctx, W, H, P) {
+  const g = lg(ctx, 0,0, W*0.6, H, [[0,P.deep],[.34,P.d1],[.64,P.mid],[1,P.deep]]);
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle = 'rgba(255,255,255,.055)'; ctx.lineWidth = 2;
+  const step = W/20;
+  for (let x = 0; x <= W; x += step) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = 0; y <= H; y += step) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  const gl = ctx.createRadialGradient(W*0.86,H*0.34,10, W*0.86,H*0.34, W*0.66);
+  gl.addColorStop(0,'rgba(255,255,255,.20)'); gl.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle = gl; ctx.fillRect(0,0,W,H);
+}
+function goldFrame(ctx, W, H) {
+  ctx.strokeStyle = 'rgba(255,209,102,.8)'; ctx.lineWidth = 3;
+  rr(ctx, 26,26, W-52, H-52, 12); ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,209,102,.4)'; ctx.lineWidth = 1.5;
+  rr(ctx, 34,34, W-68, H-68, 8); ctx.stroke();
+}
+function toran(ctx, W, P) {
+  ctx.strokeStyle = P.gold; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(30,44);
+  ctx.quadraticCurveTo(W/2, 74, W-30, 44); ctx.stroke();
+  for (let i = 0; i <= 26; i++) {
+    const t = i/26, x = 30 + t*(W-60);
+    const y = 44 + 30*Math.sin(Math.PI*t);
+    const h = i%2 ? 44 : 56, w = i%2 ? 16 : 20;
+    ctx.save(); ctx.translate(x,y); ctx.rotate((t-0.5)*0.38);
+    ctx.beginPath(); ctx.moveTo(0,0);
+    ctx.quadraticCurveTo(w, h*0.45, 0, h);
+    ctx.quadraticCurveTo(-w, h*0.45, 0, 0);
+    ctx.fillStyle = i%2 ? '#3F8A31' : '#57A845'; ctx.fill(); ctx.restore();
+  }
+}
+/* ==========================================================================
+   Templates
+   ========================================================================== */
+function featRow(ctx, P, x, y, w, h, icon, text) {
+  rr(ctx, x, y, w, h, 16);
+  ctx.fillStyle = 'rgba(0,0,0,.36)'; ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,.20)'; ctx.lineWidth = 2; ctx.stroke();
+  const ib = h - 22;
+  rr(ctx, x+12, y+11, ib, ib, 14);
+  ctx.fillStyle = lg(ctx, x+12, y+11, x+12+ib, y+11+ib, [[0,P.gold],[1,P.gold2]]); ctx.fill();
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.font = font('700', ib*0.56, FONT_T); ctx.fillStyle = P.deep;
+  ctx.fillText(icon || '•', x+12+ib/2, y+11+ib/2 + 2);
+  const tx = x + 12 + ib + 16, tw = w - (tx - x) - 18;
+  const r = wrapFit(ctx, text, tw, 34, 18, '600', 2, FONT_T);
+  ctx.textAlign = 'left'; ctx.fillStyle = P.cream;
+  const lh = r.size * 1.16, top = y + h/2 - (r.lines.length-1)*lh/2;
+  r.lines.forEach((ln,i) => { ctx.font = font('600', r.size, FONT_T); ctx.fillText(ln, tx, top + i*lh); });
+  ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+}
+
+function pillRow(ctx, P, items, y, h) {
+  const n = items.length; if (!n) return;
+  const pad = 64, gap = 14, w = (SQ - pad*2 - gap*(n-1)) / n;
+  items.forEach((it, i) => {
+    const x = pad + i*(w+gap);
+    rr(ctx, x, y, w, h, 12);
+    ctx.fillStyle = 'rgba(0,0,0,.42)'; ctx.fill();
+    ctx.strokeStyle = 'rgba(255,209,102,.45)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.font = font('700', 30, FONT_T); ctx.fillStyle = P.gold;
+    ctx.fillText(it.ic || '•', x + w/2, y + 12);
+    const r = wrapFit(ctx, it.t, w-14, 25, 14, '600', 2, FONT_T);
+    ctx.fillStyle = P.cream;
+    r.lines.forEach((ln,k) => { ctx.font = font('600', r.size, FONT_T);
+      ctx.fillText(ln, x + w/2, y + 54 + k*r.size*1.14); });
+  });
+  ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+}
+
+function ribbon(ctx, P, left, big, right, y, h) {
+  if (!left && !big && !right) return;
+  rr(ctx, 90, y, SQ-180, h, 10);
+  ctx.fillStyle = lg(ctx, 0, y, 0, y+h, [[0,'#FFE08A'],[.55,P.gold2],[1,'#C77C05']]);
+  ctx.shadowColor='rgba(0,0,0,.42)'; ctx.shadowBlur=22; ctx.shadowOffsetY=9; ctx.fill();
+  ctx.shadowColor='transparent';
+  const inner = SQ - 220;
+  const parts = [];
+  if (left)  parts.push({ t:left,  f:FONT_T, c:P.goldD, m:1.0 });
+  if (big)   parts.push({ t:big,   f:FONT_N, c:'#8E1C05', m:1.16 });
+  if (right) parts.push({ t:right, f:FONT_T, c:P.goldD, m:1.0 });
+  let size = 46;
+  for (; size > 20; size -= 2) {
+    let tot = 0;
+    parts.forEach(p => { ctx.font = font('700', size*p.m, p.f); tot += ctx.measureText(p.t).width; });
+    if (tot + (parts.length-1)*20 <= inner) break;
+  }
+  let tot = 0;
+  parts.forEach(p => { ctx.font = font('700', size*p.m, p.f); tot += ctx.measureText(p.t).width; });
+  tot += (parts.length-1)*20;
+  let x = (SQ - tot)/2;
+  ctx.textAlign='left'; ctx.textBaseline='middle';
+  parts.forEach(p => {
+    ctx.font = font('700', size*p.m, p.f); ctx.fillStyle = p.c;
+    ctx.fillText(p.t, x, y + h/2 + 1);
+    x += ctx.measureText(p.t).width + 20;
+  });
+  ctx.textBaseline='alphabetic';
+}
+
+const TPL = {
+  /* ---------- 1. business offer ---------- */
+  offer: {
+    name:'சலுகை போஸ்டர்', sub:'ஆஃபர், புது ஸ்டாக், விலை குறைப்பு',
+    d:{ h1:'ஆடி மாத சிறப்பு சலுகை', tag:'இந்த மாதம் மட்டும்! உடனே வாங்குங்கள்',
+        b1:'எக்ஸ்சேஞ்ச்', b2:'₹3000', b3:'வரை', art:'phone',
+        rows:[{ic:'💰',t:'₹500 முதல் மாத தவணை'},{ic:'🔄',t:'பழைய பொருள் எக்ஸ்சேஞ்ச்'},
+              {ic:'🎁',t:'இலவச பரிசு'},{ic:'🔧',t:'இலவச சர்வீஸ்'}] },
+    bg: bgTech,
+    body(ctx, P, d) {
+      let y = 40;
+      y = brandRow(ctx, P, d, y) + 20;
+      badge(ctx, P, d.b1, d.b2, d.b3, SQ-134, 138, 86);
+      y = headline(ctx, d.h1, SQ/2, y, 880, 100, P, 2) + 12;
+      if (d.tag) y = para(ctx, d.tag, SQ/2, y, 900, 38, P.hi, '600', 2) + 10;
+
+      const footH = 104, bottom = SQ - footH - 20;
+      const rows = (d.rows||[]).filter(r => r && r.t);
+      const rh = 82, gap = 12;
+      const rowsH = rows.length ? rows.length*rh + (rows.length-1)*gap : 0;
+      const artTop = y + 10, artH = bottom - rowsH - 20 - artTop;
+      if (d.art && d.art !== 'none' && artH > 140) drawArt(ctx, d.art, 120, artTop, 840, artH);
+      let ry = bottom - rowsH;
+      rows.forEach(r => { featRow(ctx, P, 60, ry, SQ-120, rh, r.ic, r.t); ry += rh + gap; });
+      footerBar(ctx, P, d, SQ - footH, footH);
+    }
+  },
+
+  /* ---------- 2. festival greeting ---------- */
+  festival: {
+    name:'பண்டிகை வாழ்த்து', sub:'பொங்கல், தீபாவளி, புத்தாண்டு',
+    d:{ h1:'பொங்கல்', h2:'நல்வாழ்த்துக்கள்',
+        rl:'பண்டிகை சிறப்பு தள்ளுபடி', rb:'25%', rr2:'வரை', art:'pongal',
+        p1:'🌾 பண்டிகை பொருட்கள்', p2:'🎁 இலவச பரிசு', p3:'🚚 இலவச டெலிவரி' },
+    bg: bgRadiant,
+    body(ctx, P, d) {
+      goldFrame(ctx, SQ, SQ);
+      toran(ctx, SQ, P);
+      let y = 128;
+      y = brandRow(ctx, P, d, y) + 16;
+      y = headline(ctx, d.h1, SQ/2, y, 880, 150, P, 1) + 10;
+      if (d.h2) {
+        const s = fitSize(ctx, d.h2, 760, 58, 26, '700', FONT_T);
+        ctx.font = font('700', s, FONT_T);
+        const w = ctx.measureText(d.h2).width + 116, h = s*1.5;
+        rr(ctx, (SQ-w)/2, y, w, h, 8);
+        ctx.fillStyle = lg(ctx,0,y,0,y+h,[[0,P.d1],[1,P.deep]]); ctx.fill();
+        ctx.strokeStyle = P.gold; ctx.lineWidth = 3; ctx.stroke();
+        ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle = P.cream;
+        ctx.fillText(d.h2, SQ/2, y + h/2 + 2);
+        ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+        y += h + 18;
+      }
+      const footH = 100;
+      const pills = [d.p1,d.p2,d.p3].filter(Boolean).map(t => {
+        const m = t.trim().match(/^(\p{Extended_Pictographic}\uFE0F?)\s*(.*)$/u);
+        return m ? { ic:m[1], t:m[2] } : { ic:'•', t:t };
+      });
+      const pillH = pills.length ? 96 : 0;
+      const ribH  = (d.rl||d.rb||d.rr2) ? 86 : 0;
+      const pillY = SQ - footH - 14 - pillH;
+      const ribY  = pillY - (ribH ? ribH + 14 : 0);
+      const artH  = ribY - y - 20;
+      if (d.art && d.art !== 'none' && artH > 130) drawArt(ctx, d.art, 150, y + 8, 780, artH);
+      if (ribH) ribbon(ctx, P, d.rl, d.rb, d.rr2, ribY, ribH);
+      if (pillH) pillRow(ctx, P, pills, pillY, pillH);
+      footerBar(ctx, P, d, SQ - footH, footH);
+    }
+  },
+
+  /* ---------- 3. notice / announcement ---------- */
+  notice: {
+    name:'அறிவிப்பு', sub:'விடுமுறை, வேலை வாய்ப்பு, திறப்பு விழா',
+    d:{ eb:'முக்கிய அறிவிப்பு', h1:'கடை விடுமுறை', tag:'வரும் ஞாயிறு கடை மூடப்படும். சிரமத்திற்கு வருந்துகிறோம்.',
+        art:'star', rl:'', rb:'', rr2:'' },
+    bg: bgRadiant,
+    body(ctx, P, d) {
+      goldFrame(ctx, SQ, SQ);
+      let y = 76;
+      y = brandRow(ctx, P, d, y) + 26;
+      if (d.eb) {
+        const s = fitSize(ctx, d.eb, 620, 30, 16, '700', FONT_T);
+        ctx.font = font('700', s, FONT_T);
+        const w = ctx.measureText(d.eb).width + 56, h = s*2;
+        rr(ctx, (SQ-w)/2, y, w, h, 999); ctx.fillStyle = P.gold; ctx.fill();
+        ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle = P.deep;
+        ctx.fillText(d.eb, SQ/2, y + h/2 + 1);
+        ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+        y += h + 22;
+      }
+      y = headline(ctx, d.h1, SQ/2, y, 900, 120, P, 3) + 18;
+      if (d.tag) y = para(ctx, d.tag, SQ/2, y, 860, 40, P.cream, '600', 4) + 14;
+
+      const footH = 100;
+      const ribH = (d.rl||d.rb||d.rr2) ? 86 : 0;
+      const ribY = SQ - footH - 18 - ribH;
+      const artH = ribY - y - 20;
+      if (d.art && d.art !== 'none' && artH > 140) drawArt(ctx, d.art, 200, y + 6, 680, artH);
+      if (ribH) ribbon(ctx, P, d.rl, d.rb, d.rr2, ribY, ribH);
+      footerBar(ctx, P, d, SQ - footH, footH);
+    }
+  },
+
+  /* ---------- 4. price / rate list ---------- */
+  rate: {
+    name:'விலை பட்டியல்', sub:'ரேட் போர்டு, மெனு கார்டு',
+    d:{ h1:'இன்றைய விலை', tag:'',
+        items:[{n:'பொருள் 1',p:'₹100'},{n:'பொருள் 2',p:'₹250'},{n:'பொருள் 3',p:'₹400'},
+               {n:'பொருள் 4',p:'₹550'},{n:'பொருள் 5',p:'₹700'}], art:'none' },
+    bg: bgTech,
+    body(ctx, P, d) {
+      let y = 42;
+      y = brandRow(ctx, P, d, y) + 16;
+      y = headline(ctx, d.h1, SQ/2, y, 880, 82, P, 1) + 10;
+      if (d.tag) y = para(ctx, d.tag, SQ/2, y, 860, 32, P.hi, '600', 1) + 8;
+
+      const footH = 100, bottom = SQ - footH - 26;
+      const items = (d.items||[]).filter(i => i && (i.n || i.p)).slice(0, 9);
+      const px = 64, pw = SQ - px*2;
+      const ph = bottom - y - 8;
+      if (items.length && ph > 120) {
+        rr(ctx, px, y, pw, ph, 16);
+        ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.fill();
+        const rowH = Math.min(78, (ph - 24) / items.length);
+        const fs = Math.min(38, rowH * 0.48);
+        items.forEach((it, i) => {
+          const ry = y + 12 + i*rowH;
+          if (i % 2 === 1) { ctx.fillStyle = 'rgba(0,0,0,.045)';
+            rr(ctx, px+10, ry, pw-20, rowH, 8); ctx.fill(); }
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#14161C'; ctx.textAlign = 'left';
+          const ns = fitSize(ctx, it.n||'', pw*0.58, fs, 16, '600', FONT_T);
+          ctx.font = font('600', ns, FONT_T); ctx.fillText(it.n||'', px+26, ry + rowH/2);
+          ctx.textAlign = 'right';
+          const ps = fitSize(ctx, it.p||'', pw*0.32, fs, 16, '700', FONT_N);
+          ctx.font = font('700', ps, FONT_N); ctx.fillStyle = P.mid;
+          ctx.fillText(it.p||'', px + pw - 26, ry + rowH/2);
+          if (i < items.length-1) {
+            ctx.strokeStyle = 'rgba(0,0,0,.10)'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(px+26, ry+rowH); ctx.lineTo(px+pw-26, ry+rowH); ctx.stroke();
+          }
+        });
+        ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+      }
+      footerBar(ctx, P, d, SQ - footH, footH);
+    }
+  }
+};
+
+const TPL_FIELDS = {
+  offer:    [['h1','தலைப்பு','text'],['tag','சிறு வாசகம்','text'],
+             ['__badge','மூலை பேட்ஜ்','badge'],['rows','அம்சங்கள்','rows'],
+             ['art','படம்','art'],['__color','நிறம்','color']],
+  festival: [['h1','பெரிய வாழ்த்து','text'],['h2','கீழ் வரி','text'],
+             ['__rib','ஆஃபர் பட்டை','ribbon'],
+             ['p1','அம்சம் 1','text'],['p2','அம்சம் 2','text'],['p3','அம்சம் 3','text'],
+             ['art','படம்','art'],['__color','நிறம்','color']],
+  notice:   [['eb','சிறு லேபிள்','text'],['h1','தலைப்பு','text'],['tag','விவரம்','textarea'],
+             ['__rib','கூடுதல் பட்டை','ribbon'],['art','படம்','art'],['__color','நிறம்','color']],
+  rate:     [['h1','தலைப்பு','text'],['tag','சிறு வாசகம்','text'],
+             ['items','பொருள் & விலை','items'],['__color','நிறம்','color']]
+};
+
+/* ==========================================================================
+   Render
+   ========================================================================== */
+function renderPoster(cv, tplId, d, sizeId) {
+  const t = TPL[tplId]; if (!t) return;
+  const sz = SIZES.find(s => s.id === sizeId) || SIZES[0];
+  cv.width = sz.w; cv.height = sz.h;
+  const ctx = cv.getContext('2d');
+  const P = pal(d.color || S.profile.color || '#0F4295');
+  ctx.save();
+  t.bg(ctx, sz.w, sz.h, P);
+  ctx.restore();
+  const scale = sz.w / SQ;
+  ctx.save();
+  ctx.translate(0, (sz.h - SQ*scale) / 2);
+  ctx.scale(scale, scale);
+  try { t.body(ctx, P, d); } catch (e) { logErr('render ' + tplId, e); }
+  ctx.restore();
+}
+
+
+/* ==========================================================================
+   Editor
+   ========================================================================== */
+const ED = { tpl:null, key:null, d:null, size:'post', t:null };
+
+function openEditor(tplId, key, fields) {
+  ED.tpl = tplId; ED.key = key || null; ED.size = 'post';
+  const base = JSON.parse(JSON.stringify(TPL[tplId].d));
+  ED.d = Object.assign(base, fields || {});
+  if (!ED.d.color) ED.d.color = S.profile.color;
+  PROFILE_KEYS.forEach(k => delete ED.d[k]);
+  $('edTitle').textContent = TPL[tplId].name;
+  $('edMask').classList.add('on');
+  buildSizeChips(); buildFields(); draw();
+}
+const PROFILE_KEYS = ['name','area','phone','brandTag','addr'];
+function withProfile(d) {
+  return Object.assign({}, d, { name:S.profile.name, area:S.profile.area,
+                                phone:S.profile.phone, addr:S.profile.addr,
+                                brandTag:S.profile.tag });
+}
+function closeEditor() { $('edMask').classList.remove('on'); }
+
+function buildSizeChips() {
+  $('sizeChips').innerHTML = SIZES.map(s =>
+    '<button class="chip' + (s.id===ED.size?' on':'') + '" data-s="'+s.id+'">'+s.label+'</button>').join('');
+  $('sizeChips').querySelectorAll('.chip').forEach(c => c.onclick = () => {
+    ED.size = c.dataset.s; buildSizeChips(); draw();
+  });
+}
+
+let drawT = null;
+function draw() {
+  clearTimeout(drawT);
+  drawT = setTimeout(() => {
+    renderPoster($('cv'), ED.tpl, withProfile(ED.d), ED.size);
+  }, 60);
+}
+
+function buildFields() {
+  const spec = TPL_FIELDS[ED.tpl] || [];
+  let h = '';
+  spec.forEach(([k, label, type]) => {
+    if (type === 'text')
+      h += '<div class="fld"><label>'+label+'</label><input data-k="'+k+'" value="'+esc(ED.d[k]||'')+'"></div>';
+    else if (type === 'textarea')
+      h += '<div class="fld"><label>'+label+'</label><textarea data-k="'+k+'">'+esc(ED.d[k]||'')+'</textarea></div>';
+    else if (type === 'badge')
+      h += '<div class="fld"><label>'+label+'</label><div class="fld2">'+
+           '<input data-k="b1" placeholder="மேல் வரி" value="'+esc(ED.d.b1||'')+'">'+
+           '<input data-k="b2" placeholder="பெரிய" value="'+esc(ED.d.b2||'')+'">'+
+           '<input data-k="b3" placeholder="கீழ் வரி" value="'+esc(ED.d.b3||'')+'"></div>'+
+           '<div class="hint">மூன்றும் காலியாக இருந்தால் பேட்ஜ் வராது</div></div>';
+    else if (type === 'ribbon')
+      h += '<div class="fld"><label>'+label+'</label><div class="fld2">'+
+           '<input data-k="rl" placeholder="இடது" value="'+esc(ED.d.rl||'')+'">'+
+           '<input data-k="rb" placeholder="எண்" value="'+esc(ED.d.rb||'')+'">'+
+           '<input data-k="rr2" placeholder="வலது" value="'+esc(ED.d.rr2||'')+'"></div></div>';
+    else if (type === 'rows')  h += rowsEditor();
+    else if (type === 'items') h += itemsEditor();
+    else if (type === 'art')   h += artEditor();
+    else if (type === 'color') h += colorEditor();
+  });
+  $('edFields').innerHTML = h;
+  wireFields();
+}
+
+function rowsEditor() {
+  const rows = ED.d.rows || [];
+  return '<div class="fld"><label>அம்சங்கள்</label><div id="rowsBox">' +
+    rows.map((r,i) =>
+      '<div class="frow"><button class="ficon" data-ic="'+i+'">'+esc(r.ic||'•')+'</button>'+
+      '<input data-row="'+i+'" value="'+esc(r.t||'')+'">'+
+      '<button class="fdel" data-rdel="'+i+'">✕</button></div>').join('') +
+    '</div><button class="btn sm" id="rowAdd">+ அம்சம் சேர்</button></div>';
+}
+function itemsEditor() {
+  const it = ED.d.items || [];
+  return '<div class="fld"><label>பொருள் & விலை</label><div id="itemsBox">' +
+    it.map((r,i) =>
+      '<div class="frow"><input data-in="'+i+'" placeholder="பொருள்" value="'+esc(r.n||'')+'">'+
+      '<input data-ip="'+i+'" class="num" style="flex:0 0 108px" placeholder="₹" value="'+esc(r.p||'')+'">'+
+      '<button class="fdel" data-idel="'+i+'">✕</button></div>').join('') +
+    '</div><button class="btn sm" id="itemAdd">+ வரி சேர்</button></div>';
+}
+function artEditor() {
+  return '<div class="fld"><label>படம்</label><div class="artgrid">' +
+    ART_LIST.map(a => '<button class="artbtn'+(ED.d.art===a.id?' on':'')+'" data-art="'+a.id+'">'+
+      a.ic+'<small>'+a.label+'</small></button>').join('') +
+    '</div><div class="hint">"படம்" தேர்வு செய்தால் உங்கள் photo-வை upload செய்யலாம்</div></div>';
+}
+function colorEditor() {
+  return '<div class="fld"><label>இந்த போஸ்டரின் நிறம்</label><div class="swatches">' +
+    BRAND_COLORS.map(c => '<button class="sw'+(ED.d.color===c?' on':'')+'" data-pc="'+c+'" style="background:'+c+'"></button>').join('') +
+    '</div></div>';
+}
+
+const EMOJI = ['💰','🎁','🚚','🔧','🛡️','⭐','✅','🔥','📞','🕐','🏷️','💳','🔄','🎧','🌾','🪔','🍰','🛒','👑','💎'];
+
+function wireFields() {
+  const box = $('edFields');
+  box.querySelectorAll('[data-k]').forEach(el => {
+    el.oninput = () => { ED.d[el.dataset.k] = el.value; draw(); };
+  });
+  box.querySelectorAll('[data-row]').forEach(el => {
+    el.oninput = () => { ED.d.rows[+el.dataset.row].t = el.value; draw(); };
+  });
+  box.querySelectorAll('[data-rdel]').forEach(el => {
+    el.onclick = () => { ED.d.rows.splice(+el.dataset.rdel,1); buildFields(); draw(); };
+  });
+  box.querySelectorAll('[data-ic]').forEach(el => {
+    el.onclick = () => pickEmoji(i => { ED.d.rows[+el.dataset.ic].ic = i; buildFields(); draw(); });
+  });
+  const ra = $('rowAdd');
+  if (ra) ra.onclick = () => { (ED.d.rows = ED.d.rows||[]).push({ic:'✅',t:''}); buildFields(); draw(); };
+
+  box.querySelectorAll('[data-in]').forEach(el => {
+    el.oninput = () => { ED.d.items[+el.dataset.in].n = el.value; draw(); };
+  });
+  box.querySelectorAll('[data-ip]').forEach(el => {
+    el.oninput = () => { ED.d.items[+el.dataset.ip].p = el.value; draw(); };
+  });
+  box.querySelectorAll('[data-idel]').forEach(el => {
+    el.onclick = () => { ED.d.items.splice(+el.dataset.idel,1); buildFields(); draw(); };
+  });
+  const ia = $('itemAdd');
+  if (ia) ia.onclick = () => { (ED.d.items = ED.d.items||[]).push({n:'',p:''}); buildFields(); draw(); };
+
+  box.querySelectorAll('[data-art]').forEach(el => {
+    el.onclick = async () => {
+      const id = el.dataset.art;
+      if (id === 'photo') { $('artFile').click(); return; }
+      ED.d.art = id; buildFields(); draw();
+    };
+  });
+  box.querySelectorAll('[data-pc]').forEach(el => {
+    el.onclick = () => { ED.d.color = el.dataset.pc; buildFields(); draw(); };
+  });
+}
+
+function pickEmoji(cb) {
+  openSheet('ஐகான் தேர்வு',
+    '<div class="artgrid" id="emoBox">' +
+    EMOJI.map(e => '<button class="artbtn" data-e="'+e+'" style="font-size:28px">'+e+'</button>').join('') +
+    '</div>');
+  $('emoBox').querySelectorAll('[data-e]').forEach(b =>
+    b.onclick = () => { cb(b.dataset.e); closeSheet(); });
+}
+
+/* ==========================================================================
+   Export / save
+   ========================================================================== */
+function canvasBlob(cv) {
+  return new Promise(res => cv.toBlob(b => res(b), 'image/png'));
+}
+async function exportBlob() {
+  const cv = $('cvExport');
+  renderPoster(cv, ED.tpl, withProfile(ED.d), ED.size);
+  return canvasBlob(cv);
+}
+async function downloadPoster() {
+  try {
+    const b = await exportBlob();
+    const url = URL.createObjectURL(b);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'kadaiposter-' + ED.tpl + '-' + Date.now() + '.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    toast('டவுன்லோட் ஆனது');
+  } catch (e) { logErr('download', e); toast('முடியவில்லை. மீண்டும் முயலுங்கள்'); }
+}
+async function sharePoster() {
+  try {
+    const b = await exportBlob();
+    const file = new File([b], 'kadaiposter.png', { type:'image/png' });
+    if (navigator.canShare && navigator.canShare({ files:[file] })) {
+      await navigator.share({ files:[file] });
+    } else { await downloadPoster(); }
+  } catch (e) {
+    if (e && e.name === 'AbortError') return;
+    logErr('share', e); await downloadPoster();
+  }
+}
+async function savePoster() {
+  try {
+    const thumb = document.createElement('canvas');
+    renderPoster(thumb, ED.tpl, withProfile(ED.d), 'post');
+    const small = document.createElement('canvas');
+    small.width = 300; small.height = 300;
+    small.getContext('2d').drawImage(thumb, 0, 0, 300, 300);
+    const clean = Object.assign({}, ED.d);
+    PROFILE_KEYS.forEach(k => delete clean[k]);
+    const rec = { tpl:ED.tpl, fields:clean, thumb:small.toDataURL('image/jpeg', 0.72), ts:Date.now() };
+    if (ED.key) { await dbSet('posters/' + ED.key, rec); S.posters[ED.key] = rec; }
+    else { const k = await dbPush('posters', rec); ED.key = k; S.posters[k] = rec; }
+    toast('சேமிக்கப்பட்டது');
+  } catch (e) { logErr('savePoster', e); toast('சேமிக்க முடியவில்லை'); }
+}
+
+/* ==========================================================================
+   Gallery + saved list
+   ========================================================================== */
+function renderGallery() {
+  const ids = Object.keys(TPL);
+  $('tplGrid').innerHTML = ids.map(id =>
+    '<button class="tcard" data-t="'+id+'">' +
+    '<img class="tprev" id="prev_'+id+'" alt="">' +
+    '<div class="tname">'+esc(TPL[id].name)+'<small>'+esc(TPL[id].sub)+'</small></div></button>').join('');
+  $('tplGrid').querySelectorAll('.tcard').forEach(b =>
+    b.onclick = () => openEditor(b.dataset.t));
+  const c = document.createElement('canvas');
+  ids.forEach(id => {
+    const d = withProfile(Object.assign({}, TPL[id].d, { color:S.profile.color }));
+    if (!d.name) d.name = 'உங்கள் கடை';
+    renderPoster(c, id, d, 'post');
+    const s = document.createElement('canvas'); s.width = 420; s.height = 420;
+    s.getContext('2d').drawImage(c, 0, 0, 420, 420);
+    const el = $('prev_' + id); if (el) el.src = s.toDataURL('image/jpeg', 0.78);
+  });
+}
+
+function renderMine() {
+  const keys = Object.keys(S.posters).sort((a,b) => (S.posters[b].ts||0) - (S.posters[a].ts||0));
+  if (!keys.length) {
+    $('mineWrap').innerHTML =
+      '<div class="empty"><div class="ei">🖼️</div><h4>இன்னும் போஸ்டர் இல்லை</h4>' +
+      '<p>"புதிது" பக்கத்தில் ஒரு டெம்ப்ளேட் தேர்வு செய்யுங்கள்</p>' +
+      '<button class="btn pri" onclick="go(\'scNew\')">புதிய போஸ்டர்</button></div>';
+    return;
+  }
+  $('mineWrap').innerHTML = '<div class="pgrid">' + keys.map(k => {
+    const p = S.posters[k];
+    return '<div class="pitem"><img src="'+(p.thumb||'')+'" alt="">' +
+      '<div class="pbar"><button data-ed="'+k+'">திருத்து</button>' +
+      '<button data-dl="'+k+'">நீக்கு</button></div></div>';
+  }).join('') + '</div>';
+  $('mineWrap').querySelectorAll('[data-ed]').forEach(b => b.onclick = () => {
+    const k = b.dataset.ed, p = S.posters[k];
+    openEditor(p.tpl, k, p.fields);
+  });
+  $('mineWrap').querySelectorAll('[data-dl]').forEach(b => b.onclick = async () => {
+    const k = b.dataset.dl;
+    if (!confirm('இந்த போஸ்டரை நீக்கவா?')) return;
+    delete S.posters[k];
+    try { await dbSet('posters/' + k, null); } catch (e) {}
+    renderMine(); toast('நீக்கப்பட்டது');
+  });
+}
+
+/* ==========================================================================
+   Boot
+   ========================================================================== */
+async function boot() {
+  buildPinKeys(); renderPinDots();
+
+  await Promise.all([loadFonts(), loadArt()]);
+
+  /* profile + config */
+  try {
+    const [pf, cf, ps] = await Promise.all([dbGet('profile'), dbGet('config'), dbGet('posters')]);
+    if (pf) Object.assign(S.profile, pf);
+    S.config = cf || {};
+    S.posters = ps || {};
+  } catch (e) { logErr('boot load', e); }
+
+  S.pinHash = S.config.pinHash || await sha256(DEFAULT_PIN);
+  if (!S.config.pinHash) { S.config.pinHash = S.pinHash; dbSet('config/pinHash', S.pinHash).catch(()=>{}); }
+  S.pinLoaded = true;
+
+  await setLogoImg(S.profile.logo || '');
+  fillProfileForm();
+  renderGallery();
+
+  /* flash ticker from control panel */
+  if (fbOK) {
+    db.ref(ROOT + '/flashMessage').on('value', s => {
+      const v = s.val();
+      if (v && v.text && v.on) { $('flashTxt').textContent = v.text; $('flash').classList.add('on'); }
+      else $('flash').classList.remove('on');
+    }, () => {});
+  }
+
+  $('boot').style.display = 'none';
+  if (sessionStorage.getItem('kp_unlocked') === '1') {
+    $('app').style.display = 'flex';
+    setTimeout(autoCheckPopup, 2500);
+  } else {
+    $('pinScreen').classList.add('on');
+  }
+  S.ready = true;
+}
+
+/* ---------- wiring ---------- */
+document.querySelectorAll('.nav button').forEach(b => b.onclick = () => go(b.dataset.sc));
+$('btnSaveProfile').onclick = saveProfile;
+$('btnLogo').onclick = () => $('logoFile').click();
+$('btnLogoDel').onclick = async () => {
+  S.profile.logo = ''; await setLogoImg(''); renderLogoPrev();
+  await dbSet('profile/logo', ''); renderGallery(); toast('லோகோ நீக்கப்பட்டது');
+};
+$('logoFile').onchange = async e => {
+  const f = e.target.files && e.target.files[0]; if (!f) return;
+  try {
+    const url = await readImageResized(f, 400);
+    S.profile.logo = url; await setLogoImg(url); renderLogoPrev();
+    await dbSet('profile/logo', url); renderGallery(); toast('லோகோ சேமிக்கப்பட்டது');
+  } catch (err) { logErr('logo upload', err); toast('படத்தை ஏற்ற முடியவில்லை'); }
+  e.target.value = '';
+};
+$('artFile').onchange = async e => {
+  const f = e.target.files && e.target.files[0]; if (!f) return;
+  try {
+    const url = await readImageResized(f, 1100);
+    ED.d.photoData = url; ED.d.art = 'photo';
+    await setPhotoImg(url); buildFields(); draw();
+  } catch (err) { logErr('art upload', err); toast('படத்தை ஏற்ற முடியவில்லை'); }
+  e.target.value = '';
+};
+$('btnSetPin').onclick = async () => {
+  const v = $('setPin').value.trim();
+  if (!/^\d{4}$/.test(v)) { toast('4 இலக்க PIN வேண்டும்'); return; }
+  S.pinHash = await sha256(v);
+  await dbSet('config/pinHash', S.pinHash);
+  $('setPin').value = ''; toast('PIN மாற்றப்பட்டது');
+};
+$('edClose').onclick = closeEditor;
+$('edSave').onclick = savePoster;
+$('btnDl').onclick = downloadPoster;
+$('btnShare').onclick = sharePoster;
+$('gClose').onclick = closeSheet;
+$('gMask').onclick = e => { if (e.target === $('gMask')) closeSheet(); };
+$('btnHelp').onclick = () => openSheet('உதவி',
+  '<div class="muted" style="line-height:1.6">' +
+  '<b>1.</b> "கடை" பக்கத்தில் உங்கள் கடை பெயர், போன், லோகோ ஒரு முறை சேமியுங்கள். இது எல்லா போஸ்டரிலும் தானாக வரும்.<br><br>' +
+  '<b>2.</b> "புதிது" பக்கத்தில் டெம்ப்ளேட் தேர்வு செய்யுங்கள்.<br><br>' +
+  '<b>3.</b> வாசகம் மாற்றி, டவுன்லோட் அல்லது நேரடியாக WhatsApp-ல் பகிரலாம்.<br><br>' +
+  'சந்தேகம்: kadaiposter@gmail.com</div>');
+
+/* PWA: register the service worker and pick up new builds automatically */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      reg.addEventListener('updatefound', () => {
+        const nw = reg.installing;
+        if (!nw) return;
+        nw.addEventListener('statechange', () => {
+          if (nw.state === 'installed' && navigator.serviceWorker.controller) location.reload();
+        });
+      });
+    }).catch(() => {});
+  });
+}
+
+window.go = go;
+boot().catch(e => { logErr('boot', e); $('boot').style.display = 'none'; $('pinScreen').classList.add('on'); });
+</script>
+</body>
+</html>
