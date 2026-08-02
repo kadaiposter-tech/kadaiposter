@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="app-build" content="20260802-0100">
+<meta name="app-build" content="20260802-1930">
 <meta name="theme-color" content="#14161C">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
@@ -62,6 +62,8 @@ main{flex:1;padding:16px 16px 108px;}
 .nav button{flex:1;padding:10px 4px 12px;display:flex;flex-direction:column;
   align-items:center;gap:3px;color:var(--txt2);font-size:13px;font-weight:600;}
 .nav button .ni{font-size:21px;line-height:1;}
+.nav button small{font-family:'Poppins',sans-serif;font-size:10px;font-weight:600;
+  opacity:.7;line-height:1;margin-top:-1px;}
 .nav button.on{color:var(--gold);}
 
 /* ============ Cards / lists ============ */
@@ -83,17 +85,26 @@ main{flex:1;padding:16px 16px 108px;}
 .btn.danger{background:transparent;border-color:#5A2326;color:#FF8A8E;}
 .btn.sm{padding:11px 14px;font-size:16px;border-radius:11px;}
 .btnrow{display:flex;gap:10px;} .btnrow .btn{flex:1;}
+.shrow{display:flex;gap:10px;margin-bottom:10px;}
+.shbtn{min-width:0;}
+.shbtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:13px 6px 12px;border-radius:13px;font-weight:700;font-size:15px;color:#fff;
+  border:none;line-height:1.15;}
+.shbtn:active{transform:scale(.97);}
+.shbtn .si{font-size:23px;line-height:1;}
+.shbtn small{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;opacity:.85;}
 
 /* ============ Form fields ============ */
 .fld{margin-bottom:14px;}
 .fld label{display:block;font-size:15px;font-weight:600;color:var(--txt2);margin-bottom:6px;}
+.fld label b{font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;opacity:.72;}
 .fld input,.fld textarea,.fld select{
   width:100%;background:var(--ink3);border:1px solid var(--line2);border-radius:11px;
   padding:13px 14px;font-size:17px;font-weight:500;color:var(--txt);}
 .fld textarea{resize:vertical;min-height:76px;}
 .fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-color:var(--gold);}
 .fld .hint{font-size:13px;color:var(--txt2);margin-top:5px;}
-.fld2{display:flex;gap:10px;} .fld2>*{flex:1;}
+.fld2{display:flex;gap:10px;} .fld2>*{flex:1;min-width:0;}
 
 /* ============ Template gallery ============ */
 .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
@@ -134,13 +145,23 @@ main{flex:1;padding:16px 16px 108px;}
 .swatches{display:flex;gap:9px;flex-wrap:wrap;}
 .sw{width:44px;height:44px;border-radius:12px;border:2px solid transparent;}
 .sw.on{border-color:#fff;box-shadow:0 0 0 2px var(--ink);}
+.sw.custom{position:relative;overflow:hidden;padding:0;
+  background:conic-gradient(#F00,#FF0,#0F0,#0FF,#00F,#F0F,#F00);}
+.sw.custom input{position:absolute;left:-25%;top:-25%;width:150%;height:150%;
+  opacity:0;border:none;padding:0;cursor:pointer;}
+.sw.custom span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:800;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.7);pointer-events:none;}
+.swrow{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;}
+.swrow .code{font-family:'Poppins',sans-serif;font-size:15px;color:var(--txt2);}
 
 /* art picker */
 .artgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
 .artbtn{aspect-ratio:1;border-radius:12px;background:var(--ink3);border:1px solid var(--line2);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
   font-size:22px;padding:4px;}
-.artbtn small{font-size:11px;color:var(--txt2);font-weight:600;line-height:1;}
+.artbtn small{font-size:11px;color:var(--txt2);font-weight:600;line-height:1.05;}
+.artbtn i{font-style:normal;font-family:'Poppins',sans-serif;font-size:9px;
+  color:var(--txt2);opacity:.65;line-height:1;margin-top:1px;}
 .artbtn.on{border-color:var(--gold);background:#2A2216;}
 
 /* saved posters */
@@ -229,7 +250,7 @@ main{flex:1;padding:16px 16px 108px;}
 <div id="pinScreen">
   <div class="plogo">🔒</div>
   <h2>கடை போஸ்டர்</h2>
-  <div class="psub" id="pinSub">உங்கள் PIN-ஐ உள்ளிடுங்கள்</div>
+  <div class="psub" id="pinSub">உங்கள் PIN-ஐ உள்ளிடுங்கள்<br>Enter your PIN</div>
   <div class="pdots" id="pinDots"></div>
   <div class="pmsg" id="pinMsg"></div>
   <div class="pkeys" id="pinKeys"></div>
@@ -249,58 +270,58 @@ main{flex:1;padding:16px 16px 108px;}
   <main>
     <!-- NEW -->
     <div class="screen on" id="scNew">
-      <div class="sechead">புதிய போஸ்டர்</div>
+      <div class="sechead">புதிய போஸ்டர் · New Poster</div>
       <div class="tgrid" id="tplGrid"></div>
       <div style="height:8px"></div>
     </div>
 
     <!-- MINE -->
     <div class="screen" id="scMine">
-      <div class="sechead">சேமித்த போஸ்டர்கள்</div>
+      <div class="sechead">சேமித்த போஸ்டர்கள் · Saved</div>
       <div id="mineWrap"></div>
     </div>
 
     <!-- SHOP -->
     <div class="screen" id="scShop">
-      <div class="sechead">கடை விவரம்</div>
+      <div class="sechead">கடை விவரம் · Shop Details</div>
       <div class="card">
         <div class="logobox" style="margin-bottom:16px">
           <div class="logoprev" id="logoPrev"><span>+</span></div>
           <div style="flex:1">
-            <div style="font-weight:700;margin-bottom:6px">கடை லோகோ</div>
+            <div style="font-weight:700;margin-bottom:6px">கடை லோகோ <b style="font-family:'Poppins';font-size:13px;opacity:.7">Logo</b></div>
             <div class="btnrow">
-              <button class="btn sm" id="btnLogo">தேர்வு</button>
-              <button class="btn sm ghost" id="btnLogoDel">நீக்கு</button>
+              <button class="btn sm" id="btnLogo">தேர்வு · Choose</button>
+              <button class="btn sm ghost" id="btnLogoDel">நீக்கு · Remove</button>
             </div>
           </div>
         </div>
         <input type="file" id="logoFile" accept="image/*" hidden>
 
-        <div class="fld"><label>கடை பெயர்</label>
+        <div class="fld"><label>கடை பெயர் <b>Shop name</b></label>
           <input id="pfName" placeholder="உதா: ஸ்ரீ வேல் மொபைல்ஸ்"></div>
-        <div class="fld"><label>டேக்லைன் (சிறு வாசகம்)</label>
+        <div class="fld"><label>டேக்லைன் <b>Tagline</b></label>
           <input id="pfTag" placeholder="உதா: உங்கள் நம்பிக்கை • எங்கள் சேவை"></div>
         <div class="fld2">
-          <div class="fld"><label>ஊர் / பகுதி</label><input id="pfArea" placeholder="சங்ககிரி"></div>
-          <div class="fld"><label>போன்</label><input id="pfPhone" class="num" inputmode="tel" placeholder="+91 99948 69502"></div>
+          <div class="fld"><label>ஊர் <b>Area</b></label><input id="pfArea" placeholder="சங்ககிரி"></div>
+          <div class="fld"><label>போன் <b>Phone</b></label><input id="pfPhone" class="num" inputmode="tel" placeholder="+91 99948 69502"></div>
         </div>
-        <div class="fld"><label>WhatsApp (இல்லையெனில் காலி)</label>
+        <div class="fld"><label>WhatsApp <b>optional</b></label>
           <input id="pfWa" class="num" inputmode="tel" placeholder="+91 99948 69502"></div>
-        <div class="fld"><label>முகவரி (விசிட்டிங் கார்டுக்கு)</label>
+        <div class="fld"><label>முகவரி <b>Address</b></label>
           <textarea id="pfAddr" placeholder="கடை முகவரி"></textarea></div>
 
-        <div class="fld"><label>பிராண்ட் நிறம்</label>
+        <div class="fld"><label>பிராண்ட் நிறம் <b>Brand colour</b></label>
           <div class="swatches" id="colorSw"></div>
           <div class="hint">இந்த நிறம் எல்லா போஸ்டரிலும் தானாக வரும்</div></div>
 
-        <button class="btn pri" id="btnSaveProfile">சேமி</button>
+        <button class="btn pri" id="btnSaveProfile">சேமி · Save</button>
       </div>
 
-      <div class="sechead">அமைப்பு</div>
+      <div class="sechead">அமைப்பு · Settings</div>
       <div class="card">
-        <div class="fld"><label>PIN மாற்று (4 இலக்கம்)</label>
+        <div class="fld"><label>PIN மாற்று <b>Change PIN — 4 digits</b></label>
           <input id="setPin" class="num" inputmode="numeric" maxlength="4" placeholder="••••"></div>
-        <button class="btn sm" id="btnSetPin">PIN சேமி</button>
+        <button class="btn sm" id="btnSetPin">PIN சேமி · Save PIN</button>
         <div style="height:12px"></div>
         <div class="muted" id="shopMeta"></div>
       </div>
@@ -308,9 +329,9 @@ main{flex:1;padding:16px 16px 108px;}
   </main>
 
   <div class="nav">
-    <button data-sc="scNew" class="on"><span class="ni">✨</span>புதிது</button>
-    <button data-sc="scMine"><span class="ni">🖼️</span>எனது</button>
-    <button data-sc="scShop"><span class="ni">🏪</span>கடை</button>
+    <button data-sc="scNew" class="on"><span class="ni">✨</span>புதிது<small>New</small></button>
+    <button data-sc="scMine"><span class="ni">🖼️</span>எனது<small>Saved</small></button>
+    <button data-sc="scShop"><span class="ni">🏪</span>கடை<small>Shop</small></button>
   </div>
 </div>
 
@@ -319,15 +340,16 @@ main{flex:1;padding:16px 16px 108px;}
   <div class="sheet full" id="edSheet">
     <div class="sheethead">
       <button class="iconbtn" id="edClose">✕</button>
-      <h3 id="edTitle">போஸ்டர்</h3>
+      <h3 id="edTitle">போஸ்டர் · Poster</h3>
       <button class="iconbtn" id="edSave">💾</button>
     </div>
     <div class="stage"><canvas id="cv"></canvas></div>
     <div class="sizechips" id="sizeChips"></div>
     <div class="goldrule"></div>
+    <div class="shrow" id="shareRow"></div>
     <div class="btnrow" style="margin-bottom:18px">
-      <button class="btn pri" id="btnDl">⬇ டவுன்லோட்</button>
-      <button class="btn teal" id="btnShare">➦ பகிர்</button>
+      <button class="btn pri" id="btnDl">⬇ டவுன்லோட் / Download</button>
+      <button class="btn ghost" id="btnShare">➦ மற்றவை / Other</button>
     </div>
     <div id="edFields"></div>
     <div style="height:30px"></div>
@@ -601,15 +623,24 @@ async function pinTap(k) {
    Profile
    ========================================================================== */
 const BRAND_COLORS = ['#0F4295','#10763A','#B32E0C','#6D28D9','#B45309',
-                      '#0E7490','#BE185D','#15803D','#1F2937','#A16207'];
+                      '#0E7490','#BE185D','#166534','#3F3F9E','#A16207',
+                      '#9D174D','#065F46'];
 
+function swatchHTML(sel) {
+  return BRAND_COLORS.map(c =>
+      '<button class="sw' + (sel === c ? ' on' : '') + '" data-c="' + c +
+      '" style="background:' + c + '"></button>').join('') +
+    '<label class="sw custom' + (BRAND_COLORS.indexOf(sel) < 0 ? ' on' : '') + '">' +
+    '<input type="color" value="' + esc(sel || '#0F4295') + '"><span>+</span></label>';
+}
 function renderSwatches() {
-  $('colorSw').innerHTML = BRAND_COLORS.map(c =>
-    '<button class="sw' + (S.profile.color === c ? ' on' : '') + '" data-c="' + c +
-    '" style="background:' + c + '"></button>').join('');
-  $('colorSw').querySelectorAll('.sw').forEach(b => b.onclick = () => {
+  $('colorSw').innerHTML = swatchHTML(S.profile.color) +
+    '<div class="swrow" style="width:100%"><span class="code">' + esc(S.profile.color) + '</span></div>';
+  $('colorSw').querySelectorAll('.sw[data-c]').forEach(b => b.onclick = () => {
     S.profile.color = b.dataset.c; renderSwatches();
   });
+  const ci = $('colorSw').querySelector('.sw.custom input');
+  if (ci) ci.oninput = () => { S.profile.color = ci.value.toUpperCase(); renderSwatches(); };
 }
 
 function fillProfileForm() {
@@ -683,9 +714,17 @@ function go(sc) {
    ========================================================================== */
 const SQ = 1080;
 const SIZES = [
-  { id:'post',  label:'போஸ்ட் 1:1',  w:1080, h:1080 },
-  { id:'story', label:'ஸ்டோரி / ஸ்டேட்டஸ', w:1080, h:1920 },
-  { id:'hd',    label:'HD பிரிண்ட்', w:2160, h:2160 }
+  { id:'post',  label:'போஸ்ட் 1:1 · Square',   w:1080, h:1080 },
+  { id:'insta', label:'இன்ஸ்டா 4:5 · Portrait', w:1080, h:1350 },
+  { id:'story', label:'ஸ்டோரி 9:16 · Status',   w:1080, h:1920 },
+  { id:'hd',    label:'HD பிரிண்ட் · Print',    w:2160, h:2160 }
+];
+
+/* each platform gets the size it actually shows best */
+const SHARE_TARGETS = [
+  { id:'wa', label:'WhatsApp', sub:'Status 9:16', size:'story', bg:'#128C4B', ic:'💬' },
+  { id:'ig', label:'Instagram', sub:'Post 4:5',   size:'insta', bg:'#C13584', ic:'📷' },
+  { id:'fb', label:'Facebook',  sub:'Post 1:1',   size:'post',  bg:'#1877F2', ic:'👍' }
 ];
 
 const FONT_T = '"Anek Tamil","Catamaran",sans-serif';
@@ -864,6 +903,8 @@ function footerBar(ctx, P, d, y, h) {
 /* brand row: logo + shop name */
 function brandRow(ctx, P, d, y, align) {
   const name = (d.name || '').trim();
+  const hasLogo = !!(ART.logo && ART.logo.complete && ART.logo.naturalWidth);
+  if (!name && !hasLogo) return y;          /* nothing to show yet */
   const tag  = (d.brandTag || '').trim();   /* shop tagline, NOT the poster's own tag */
   const box = 76;
   const nSize = name ? fitSize(ctx, name, 700, 40, 22, '700', FONT_T) : 0;
@@ -878,7 +919,7 @@ function brandRow(ctx, P, d, y, align) {
   ctx.fillStyle = lg(ctx, x, y, x+box, y+box, [[0,P.gold],[1,P.gold2]]);
   ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 5;
   ctx.fill(); ctx.restore();
-  if (ART.logo && ART.logo.complete && ART.logo.naturalWidth) {
+  if (hasLogo) {
     ctx.save(); rr(ctx, x, y, box, box, 20); ctx.clip();
     ctx.drawImage(ART.logo, x, y, box, box); ctx.restore();
   } else {
@@ -1042,16 +1083,16 @@ const ART_SVG = {
 };
 
 const ART_LIST = [
-  { id:'none',    ic:'∅',  label:'இல்லை' },
-  { id:'photo',   ic:'📷', label:'படம்' },
-  { id:'pongal',  ic:'🌾', label:'பொங்கல்' },
-  { id:'diya',    ic:'🪔', label:'தீபம்' },
-  { id:'gift',    ic:'🎁', label:'பரிசு' },
-  { id:'phone',   ic:'📱', label:'மொபைல்' },
-  { id:'house',   ic:'🏠', label:'வீடு' },
-  { id:'cake',    ic:'🎂', label:'கேக்' },
-  { id:'cart',    ic:'🛒', label:'கடை' },
-  { id:'star',    ic:'⭐', label:'நட்சத்திரம்' }
+  { id:'none',    ic:'∅',  label:'இல்லை',      en:'None' },
+  { id:'photo',   ic:'📷', label:'படம்',        en:'Photo' },
+  { id:'pongal',  ic:'🌾', label:'பொங்கல்',     en:'Pongal' },
+  { id:'diya',    ic:'🪔', label:'தீபம்',       en:'Diya' },
+  { id:'gift',    ic:'🎁', label:'பரிசு',       en:'Gift' },
+  { id:'phone',   ic:'📱', label:'மொபைல்',      en:'Phone' },
+  { id:'house',   ic:'🏠', label:'வீடு',        en:'House' },
+  { id:'cake',    ic:'🎂', label:'கேக்',        en:'Cake' },
+  { id:'cart',    ic:'🛒', label:'கடை',         en:'Shop' },
+  { id:'star',    ic:'⭐', label:'நட்சத்திரம்', en:'Star' }
 ];
 
 const ART = {};          /* id -> HTMLImageElement */
@@ -1217,40 +1258,46 @@ function ribbon(ctx, P, left, big, right, y, h) {
 const TPL = {
   /* ---------- 1. business offer ---------- */
   offer: {
-    name:'சலுகை போஸ்டர்', sub:'ஆஃபர், புது ஸ்டாக், விலை குறைப்பு',
+    name:'சலுகை போஸ்டர்', sub:'Offer Poster — ஆஃபர், புது ஸ்டாக்',
     d:{ h1:'ஆடி மாத சிறப்பு சலுகை', tag:'இந்த மாதம் மட்டும்! உடனே வாங்குங்கள்',
         b1:'எக்ஸ்சேஞ்ச்', b2:'₹3000', b3:'வரை', art:'phone',
         rows:[{ic:'💰',t:'₹500 முதல் மாத தவணை'},{ic:'🔄',t:'பழைய பொருள் எக்ஸ்சேஞ்ச்'},
               {ic:'🎁',t:'இலவச பரிசு'},{ic:'🔧',t:'இலவச சர்வீஸ்'}] },
     bg: bgTech,
-    body(ctx, P, d) {
+    body(ctx, P, d, VH) {
+      VH = VH || SQ;
       let y = 40;
       y = brandRow(ctx, P, d, y) + 20;
-      badge(ctx, P, d.b1, d.b2, d.b3, SQ-134, 138, 86);
+      if (d.b1 || d.b2 || d.b3) {
+        badge(ctx, P, d.b1, d.b2, d.b3, SQ-134, 138, 86);
+        y = Math.max(y, 248);                 /* clear the badge before the headline */
+      }
       y = headline(ctx, d.h1, SQ/2, y, 880, 100, P, 2) + 12;
       if (d.tag) y = para(ctx, d.tag, SQ/2, y, 900, 38, P.hi, '600', 2) + 10;
 
-      const footH = 104, bottom = SQ - footH - 20;
+      const footH = 104, bottom = VH - footH - 20;
       const rows = (d.rows||[]).filter(r => r && r.t);
       const rh = 82, gap = 12;
       const rowsH = rows.length ? rows.length*rh + (rows.length-1)*gap : 0;
       const artTop = y + 10, artH = bottom - rowsH - 20 - artTop;
-      if (d.art && d.art !== 'none' && artH > 140) drawArt(ctx, d.art, 120, artTop, 840, artH);
+      if (d.art && d.art !== 'none' && artH > 140)
+        drawArt(ctx, d.art, 120, artTop, 840, Math.min(artH, 600));
       let ry = bottom - rowsH;
       rows.forEach(r => { featRow(ctx, P, 60, ry, SQ-120, rh, r.ic, r.t); ry += rh + gap; });
-      footerBar(ctx, P, d, SQ - footH, footH);
+      footerBar(ctx, P, d, VH - footH, footH);
     }
   },
 
   /* ---------- 2. festival greeting ---------- */
   festival: {
-    name:'பண்டிகை வாழ்த்து', sub:'பொங்கல், தீபாவளி, புத்தாண்டு',
+    name:'பண்டிகை வாழ்த்து', sub:'Festival Greeting — பொங்கல், தீபாவளி',
     d:{ h1:'பொங்கல்', h2:'நல்வாழ்த்துக்கள்',
         rl:'பண்டிகை சிறப்பு தள்ளுபடி', rb:'25%', rr2:'வரை', art:'pongal',
         p1:'🌾 பண்டிகை பொருட்கள்', p2:'🎁 இலவச பரிசு', p3:'🚚 இலவச டெலிவரி' },
     bg: bgRadiant,
-    body(ctx, P, d) {
-      goldFrame(ctx, SQ, SQ);
+    body(ctx, P, d, VH) {
+      VH = VH || SQ;
+      goldFrame(ctx, SQ, VH);
       toran(ctx, SQ, P);
       let y = 128;
       y = brandRow(ctx, P, d, y) + 16;
@@ -1274,24 +1321,26 @@ const TPL = {
       });
       const pillH = pills.length ? 96 : 0;
       const ribH  = (d.rl||d.rb||d.rr2) ? 86 : 0;
-      const pillY = SQ - footH - 14 - pillH;
+      const pillY = VH - footH - 14 - pillH;
       const ribY  = pillY - (ribH ? ribH + 14 : 0);
       const artH  = ribY - y - 20;
-      if (d.art && d.art !== 'none' && artH > 130) drawArt(ctx, d.art, 150, y + 8, 780, artH);
+      if (d.art && d.art !== 'none' && artH > 130)
+        drawArt(ctx, d.art, 150, y + 8, 780, Math.min(artH, 640));
       if (ribH) ribbon(ctx, P, d.rl, d.rb, d.rr2, ribY, ribH);
       if (pillH) pillRow(ctx, P, pills, pillY, pillH);
-      footerBar(ctx, P, d, SQ - footH, footH);
+      footerBar(ctx, P, d, VH - footH, footH);
     }
   },
 
   /* ---------- 3. notice / announcement ---------- */
   notice: {
-    name:'அறிவிப்பு', sub:'விடுமுறை, வேலை வாய்ப்பு, திறப்பு விழா',
+    name:'அறிவிப்பு', sub:'Announcement — விடுமுறை, திறப்பு விழா',
     d:{ eb:'முக்கிய அறிவிப்பு', h1:'கடை விடுமுறை', tag:'வரும் ஞாயிறு கடை மூடப்படும். சிரமத்திற்கு வருந்துகிறோம்.',
         art:'star', rl:'', rb:'', rr2:'' },
     bg: bgRadiant,
-    body(ctx, P, d) {
-      goldFrame(ctx, SQ, SQ);
+    body(ctx, P, d, VH) {
+      VH = VH || SQ;
+      goldFrame(ctx, SQ, VH);
       let y = 76;
       y = brandRow(ctx, P, d, y) + 26;
       if (d.eb) {
@@ -1309,28 +1358,29 @@ const TPL = {
 
       const footH = 100;
       const ribH = (d.rl||d.rb||d.rr2) ? 86 : 0;
-      const ribY = SQ - footH - 18 - ribH;
+      const ribY = VH - footH - 18 - ribH;
       const artH = ribY - y - 20;
-      if (d.art && d.art !== 'none' && artH > 140) drawArt(ctx, d.art, 200, y + 6, 680, artH);
+      if (d.art && d.art !== 'none' && artH > 140) drawArt(ctx, d.art, 200, y + 6, 680, Math.min(artH, 620));
       if (ribH) ribbon(ctx, P, d.rl, d.rb, d.rr2, ribY, ribH);
-      footerBar(ctx, P, d, SQ - footH, footH);
+      footerBar(ctx, P, d, VH - footH, footH);
     }
   },
 
   /* ---------- 4. price / rate list ---------- */
   rate: {
-    name:'விலை பட்டியல்', sub:'ரேட் போர்டு, மெனு கார்டு',
+    name:'விலை பட்டியல்', sub:'Price List — ரேட் போர்டு, மெனு',
     d:{ h1:'இன்றைய விலை', tag:'',
         items:[{n:'பொருள் 1',p:'₹100'},{n:'பொருள் 2',p:'₹250'},{n:'பொருள் 3',p:'₹400'},
                {n:'பொருள் 4',p:'₹550'},{n:'பொருள் 5',p:'₹700'}], art:'none' },
     bg: bgTech,
-    body(ctx, P, d) {
+    body(ctx, P, d, VH) {
+      VH = VH || SQ;
       let y = 42;
       y = brandRow(ctx, P, d, y) + 16;
       y = headline(ctx, d.h1, SQ/2, y, 880, 82, P, 1) + 10;
       if (d.tag) y = para(ctx, d.tag, SQ/2, y, 860, 32, P.hi, '600', 1) + 8;
 
-      const footH = 100, bottom = SQ - footH - 26;
+      const footH = 100, bottom = VH - footH - 26;
       const items = (d.items||[]).filter(i => i && (i.n || i.p)).slice(0, 9);
       const px = 64, pw = SQ - px*2;
       const ph = bottom - y - 8;
@@ -1358,23 +1408,23 @@ const TPL = {
         });
         ctx.textAlign='left'; ctx.textBaseline='alphabetic';
       }
-      footerBar(ctx, P, d, SQ - footH, footH);
+      footerBar(ctx, P, d, VH - footH, footH);
     }
   }
 };
 
 const TPL_FIELDS = {
-  offer:    [['h1','தலைப்பு','text'],['tag','சிறு வாசகம்','text'],
-             ['__badge','மூலை பேட்ஜ்','badge'],['rows','அம்சங்கள்','rows'],
-             ['art','படம்','art'],['__color','நிறம்','color']],
-  festival: [['h1','பெரிய வாழ்த்து','text'],['h2','கீழ் வரி','text'],
-             ['__rib','ஆஃபர் பட்டை','ribbon'],
-             ['p1','அம்சம் 1','text'],['p2','அம்சம் 2','text'],['p3','அம்சம் 3','text'],
-             ['art','படம்','art'],['__color','நிறம்','color']],
-  notice:   [['eb','சிறு லேபிள்','text'],['h1','தலைப்பு','text'],['tag','விவரம்','textarea'],
-             ['__rib','கூடுதல் பட்டை','ribbon'],['art','படம்','art'],['__color','நிறம்','color']],
-  rate:     [['h1','தலைப்பு','text'],['tag','சிறு வாசகம்','text'],
-             ['items','பொருள் & விலை','items'],['__color','நிறம்','color']]
+  offer:    [['h1','தலைப்பு <b>Title</b>','text'],['tag','சிறு வாசகம் <b>Tagline</b>','text'],
+             ['__badge','மூலை பேட்ஜ் <b>Corner badge</b>','badge'],['rows','அம்சங்கள் <b>Features</b>','rows'],
+             ['art','படம் <b>Image</b>','art'],['__color','நிறம் <b>Colour</b>','color']],
+  festival: [['h1','பெரிய வாழ்த்து <b>Main greeting</b>','text'],['h2','கீழ் வரி <b>Second line</b>','text'],
+             ['__rib','ஆஃபர் பட்டை <b>Offer ribbon</b>','ribbon'],
+             ['p1','அம்சம் 1 <b>Point 1</b>','text'],['p2','அம்சம் 2 <b>Point 2</b>','text'],['p3','அம்சம் 3 <b>Point 3</b>','text'],
+             ['art','படம் <b>Image</b>','art'],['__color','நிறம் <b>Colour</b>','color']],
+  notice:   [['eb','சிறு லேபிள் <b>Small label</b>','text'],['h1','தலைப்பு <b>Title</b>','text'],['tag','விவரம் <b>Details</b>','textarea'],
+             ['__rib','கூடுதல் பட்டை <b>Extra ribbon</b>','ribbon'],['art','படம் <b>Image</b>','art'],['__color','நிறம் <b>Colour</b>','color']],
+  rate:     [['h1','தலைப்பு <b>Title</b>','text'],['tag','சிறு வாசகம் <b>Tagline</b>','text'],
+             ['items','பொருள் &amp; விலை <b>Item &amp; price</b>','items'],['__color','நிறம் <b>Colour</b>','color']]
 };
 
 /* ==========================================================================
@@ -1390,10 +1440,10 @@ function renderPoster(cv, tplId, d, sizeId) {
   t.bg(ctx, sz.w, sz.h, P);
   ctx.restore();
   const scale = sz.w / SQ;
+  const VH = sz.h / scale;          /* height in template units (1080 wide) */
   ctx.save();
-  ctx.translate(0, (sz.h - SQ*scale) / 2);
   ctx.scale(scale, scale);
-  try { t.body(ctx, P, d); } catch (e) { logErr('render ' + tplId, e); }
+  try { t.body(ctx, P, d, VH); } catch (e) { logErr('render ' + tplId, e); }
   ctx.restore();
 }
 
@@ -1411,7 +1461,7 @@ function openEditor(tplId, key, fields) {
   PROFILE_KEYS.forEach(k => delete ED.d[k]);
   $('edTitle').textContent = TPL[tplId].name;
   $('edMask').classList.add('on');
-  buildSizeChips(); buildFields(); draw();
+  buildShareRow(); buildSizeChips(); buildFields(); draw();
 }
 const PROFILE_KEYS = ['name','area','phone','brandTag','addr'];
 function withProfile(d) {
@@ -1420,6 +1470,17 @@ function withProfile(d) {
                                 brandTag:S.profile.tag });
 }
 function closeEditor() { $('edMask').classList.remove('on'); }
+
+function buildShareRow() {
+  $('shareRow').innerHTML = SHARE_TARGETS.map(t =>
+    '<button class="shbtn" data-sh="' + t.id + '" style="background:' + t.bg + '">' +
+    '<span class="si">' + t.ic + '</span>' + t.label + '<small>' + t.sub + '</small></button>').join('');
+  $('shareRow').querySelectorAll('[data-sh]').forEach(b => b.onclick = () => {
+    const t = SHARE_TARGETS.find(x => x.id === b.dataset.sh);
+    ED.size = t.size; buildSizeChips(); draw();
+    sharePoster(t.label);
+  });
+}
 
 function buildSizeChips() {
   $('sizeChips').innerHTML = SIZES.map(s =>
@@ -1447,15 +1508,15 @@ function buildFields() {
       h += '<div class="fld"><label>'+label+'</label><textarea data-k="'+k+'">'+esc(ED.d[k]||'')+'</textarea></div>';
     else if (type === 'badge')
       h += '<div class="fld"><label>'+label+'</label><div class="fld2">'+
-           '<input data-k="b1" placeholder="மேல் வரி" value="'+esc(ED.d.b1||'')+'">'+
-           '<input data-k="b2" placeholder="பெரிய" value="'+esc(ED.d.b2||'')+'">'+
-           '<input data-k="b3" placeholder="கீழ் வரி" value="'+esc(ED.d.b3||'')+'"></div>'+
-           '<div class="hint">மூன்றும் காலியாக இருந்தால் பேட்ஜ் வராது</div></div>';
+           '<input data-k="b1" placeholder="மேல் · Top" value="'+esc(ED.d.b1||'')+'">'+
+           '<input data-k="b2" placeholder="பெரிய · Big" value="'+esc(ED.d.b2||'')+'">'+
+           '<input data-k="b3" placeholder="கீழ் · Bottom" value="'+esc(ED.d.b3||'')+'"></div>'+
+           '<div class="hint">மூன்றும் காலி என்றால் பேட்ஜ் வராது · leave blank to hide</div></div>';
     else if (type === 'ribbon')
       h += '<div class="fld"><label>'+label+'</label><div class="fld2">'+
-           '<input data-k="rl" placeholder="இடது" value="'+esc(ED.d.rl||'')+'">'+
-           '<input data-k="rb" placeholder="எண்" value="'+esc(ED.d.rb||'')+'">'+
-           '<input data-k="rr2" placeholder="வலது" value="'+esc(ED.d.rr2||'')+'"></div></div>';
+           '<input data-k="rl" placeholder="இடது · Left" value="'+esc(ED.d.rl||'')+'">'+
+           '<input data-k="rb" placeholder="எண் · Number" value="'+esc(ED.d.rb||'')+'">'+
+           '<input data-k="rr2" placeholder="வலது · Right" value="'+esc(ED.d.rr2||'')+'"></div></div>';
     else if (type === 'rows')  h += rowsEditor();
     else if (type === 'items') h += itemsEditor();
     else if (type === 'art')   h += artEditor();
@@ -1467,32 +1528,34 @@ function buildFields() {
 
 function rowsEditor() {
   const rows = ED.d.rows || [];
-  return '<div class="fld"><label>அம்சங்கள்</label><div id="rowsBox">' +
+  return '<div class="fld"><label>அம்சங்கள் <b>Features</b></label><div id="rowsBox">' +
     rows.map((r,i) =>
       '<div class="frow"><button class="ficon" data-ic="'+i+'">'+esc(r.ic||'•')+'</button>'+
       '<input data-row="'+i+'" value="'+esc(r.t||'')+'">'+
       '<button class="fdel" data-rdel="'+i+'">✕</button></div>').join('') +
-    '</div><button class="btn sm" id="rowAdd">+ அம்சம் சேர்</button></div>';
+    '</div><button class="btn sm" id="rowAdd">+ அம்சம் சேர் · Add feature</button></div>';
 }
 function itemsEditor() {
   const it = ED.d.items || [];
-  return '<div class="fld"><label>பொருள் & விலை</label><div id="itemsBox">' +
+  return '<div class="fld"><label>பொருள் &amp; விலை <b>Item &amp; price</b></label><div id="itemsBox">' +
     it.map((r,i) =>
-      '<div class="frow"><input data-in="'+i+'" placeholder="பொருள்" value="'+esc(r.n||'')+'">'+
+      '<div class="frow"><input data-in="'+i+'" placeholder="பொருள் · Item" value="'+esc(r.n||'')+'">'+
       '<input data-ip="'+i+'" class="num" style="flex:0 0 108px" placeholder="₹" value="'+esc(r.p||'')+'">'+
       '<button class="fdel" data-idel="'+i+'">✕</button></div>').join('') +
-    '</div><button class="btn sm" id="itemAdd">+ வரி சேர்</button></div>';
+    '</div><button class="btn sm" id="itemAdd">+ வரி சேர் · Add row</button></div>';
 }
 function artEditor() {
-  return '<div class="fld"><label>படம்</label><div class="artgrid">' +
+  return '<div class="fld"><label>படம் <b>Image</b></label><div class="artgrid">' +
     ART_LIST.map(a => '<button class="artbtn'+(ED.d.art===a.id?' on':'')+'" data-art="'+a.id+'">'+
-      a.ic+'<small>'+a.label+'</small></button>').join('') +
-    '</div><div class="hint">"படம்" தேர்வு செய்தால் உங்கள் photo-வை upload செய்யலாம்</div></div>';
+      a.ic+'<small>'+a.label+'</small><i>'+a.en+'</i></button>').join('') +
+    '</div><div class="hint">"படம் / Photo" தேர்வு செய்தால் உங்கள் photo-வை upload செய்யலாம்</div></div>';
 }
 function colorEditor() {
-  return '<div class="fld"><label>இந்த போஸ்டரின் நிறம்</label><div class="swatches">' +
-    BRAND_COLORS.map(c => '<button class="sw'+(ED.d.color===c?' on':'')+'" data-pc="'+c+'" style="background:'+c+'"></button>').join('') +
-    '</div></div>';
+  return '<div class="fld"><label>இந்த போஸ்டரின் நிறம் <b>Poster colour</b></label>' +
+    '<div class="swatches" id="pcSw">' + swatchHTML(ED.d.color) + '</div>' +
+    '<div class="swrow"><span class="code" id="pcCode">' + esc(ED.d.color || '') + '</span>' +
+    '<button class="btn sm ghost" id="pcReset" style="flex:0 0 auto;width:auto;padding:8px 14px">' +
+    'கடை நிறம் / Shop colour</button></div></div>';
 }
 
 const EMOJI = ['💰','🎁','🚚','🔧','🛡️','⭐','✅','🔥','📞','🕐','🏷️','💳','🔄','🎧','🌾','🪔','🍰','🛒','👑','💎'];
@@ -1533,13 +1596,26 @@ function wireFields() {
       ED.d.art = id; buildFields(); draw();
     };
   });
-  box.querySelectorAll('[data-pc]').forEach(el => {
-    el.onclick = () => { ED.d.color = el.dataset.pc; buildFields(); draw(); };
-  });
+  const pc = $('pcSw');
+  if (pc) {
+    pc.querySelectorAll('.sw[data-c]').forEach(el => {
+      el.onclick = () => { ED.d.color = el.dataset.c; buildFields(); draw(); };
+    });
+    const ci = pc.querySelector('.sw.custom input');
+    if (ci) ci.oninput = () => {
+      ED.d.color = ci.value.toUpperCase();
+      const code = $('pcCode'); if (code) code.textContent = ED.d.color;
+      pc.querySelectorAll('.sw').forEach(s => s.classList.remove('on'));
+      ci.parentElement.classList.add('on');
+      draw();
+    };
+  }
+  const pr = $('pcReset');
+  if (pr) pr.onclick = () => { ED.d.color = S.profile.color; buildFields(); draw(); };
 }
 
 function pickEmoji(cb) {
-  openSheet('ஐகான் தேர்வு',
+  openSheet('ஐகான் தேர்வு · Pick icon',
     '<div class="artgrid" id="emoBox">' +
     EMOJI.map(e => '<button class="artbtn" data-e="'+e+'" style="font-size:28px">'+e+'</button>').join('') +
     '</div>');
@@ -1569,16 +1645,20 @@ async function downloadPoster() {
     toast('டவுன்லோட் ஆனது');
   } catch (e) { logErr('download', e); toast('முடியவில்லை. மீண்டும் முயலுங்கள்'); }
 }
-async function sharePoster() {
+async function sharePoster(target) {
   try {
     const b = await exportBlob();
     const file = new File([b], 'kadaiposter.png', { type:'image/png' });
     if (navigator.canShare && navigator.canShare({ files:[file] })) {
       await navigator.share({ files:[file] });
-    } else { await downloadPoster(); }
+      return;
+    }
+    await downloadPoster();
+    toast(target ? (target + '-க்கான அளவில் சேமிக்கப்பட்டது') : 'சேமிக்கப்பட்டது');
   } catch (e) {
     if (e && e.name === 'AbortError') return;
-    logErr('share', e); await downloadPoster();
+    logErr('share', e);
+    await downloadPoster();
   }
 }
 async function savePoster() {
@@ -1623,16 +1703,16 @@ function renderMine() {
   const keys = Object.keys(S.posters).sort((a,b) => (S.posters[b].ts||0) - (S.posters[a].ts||0));
   if (!keys.length) {
     $('mineWrap').innerHTML =
-      '<div class="empty"><div class="ei">🖼️</div><h4>இன்னும் போஸ்டர் இல்லை</h4>' +
+      '<div class="empty"><div class="ei">🖼️</div><h4>இன்னும் போஸ்டர் இல்லை · No posters yet</h4>' +
       '<p>"புதிது" பக்கத்தில் ஒரு டெம்ப்ளேட் தேர்வு செய்யுங்கள்</p>' +
-      '<button class="btn pri" onclick="go(\'scNew\')">புதிய போஸ்டர்</button></div>';
+      '<button class="btn pri" onclick="go(\'scNew\')">புதிய போஸ்டர் · New Poster</button></div>';
     return;
   }
   $('mineWrap').innerHTML = '<div class="pgrid">' + keys.map(k => {
     const p = S.posters[k];
     return '<div class="pitem"><img src="'+(p.thumb||'')+'" alt="">' +
-      '<div class="pbar"><button data-ed="'+k+'">திருத்து</button>' +
-      '<button data-dl="'+k+'">நீக்கு</button></div></div>';
+      '<div class="pbar"><button data-ed="'+k+'">திருத்து · Edit</button>' +
+      '<button data-dl="'+k+'">நீக்கு · Delete</button></div></div>';
   }).join('') + '</div>';
   $('mineWrap').querySelectorAll('[data-ed]').forEach(b => b.onclick = () => {
     const k = b.dataset.ed, p = S.posters[k];
@@ -1726,15 +1806,22 @@ $('btnSetPin').onclick = async () => {
 $('edClose').onclick = closeEditor;
 $('edSave').onclick = savePoster;
 $('btnDl').onclick = downloadPoster;
-$('btnShare').onclick = sharePoster;
+$('btnShare').onclick = () => sharePoster();
 $('gClose').onclick = closeSheet;
 $('gMask').onclick = e => { if (e.target === $('gMask')) closeSheet(); };
-$('btnHelp').onclick = () => openSheet('உதவி',
-  '<div class="muted" style="line-height:1.6">' +
-  '<b>1.</b> "கடை" பக்கத்தில் உங்கள் கடை பெயர், போன், லோகோ ஒரு முறை சேமியுங்கள். இது எல்லா போஸ்டரிலும் தானாக வரும்.<br><br>' +
-  '<b>2.</b> "புதிது" பக்கத்தில் டெம்ப்ளேட் தேர்வு செய்யுங்கள்.<br><br>' +
-  '<b>3.</b> வாசகம் மாற்றி, டவுன்லோட் அல்லது நேரடியாக WhatsApp-ல் பகிரலாம்.<br><br>' +
-  'சந்தேகம்: kadaiposter@gmail.com</div>');
+$('btnHelp').onclick = () => openSheet('உதவி · Help',
+  '<div class="muted" style="line-height:1.65">' +
+  '<b>1.</b> "கடை · Shop" பக்கத்தில் கடை பெயர், போன், லோகோ ஒரு முறை சேமியுங்கள். ' +
+  'இது எல்லா போஸ்டரிலும் தானாக வரும்.<br>' +
+  '<span style="opacity:.7">Save your shop name, phone and logo once — every poster picks it up.</span><br><br>' +
+  '<b>2.</b> "புதிது · New" பக்கத்தில் டெம்ப்ளேட் தேர்வு செய்யுங்கள்.<br>' +
+  '<span style="opacity:.7">Pick a template on the New page.</span><br><br>' +
+  '<b>3.</b> வாசகம் மாற்றி WhatsApp / Instagram / Facebook பட்டனை அழுத்துங்கள் — ' +
+  'அந்த ஆப்-க்கு சரியான அளவில் வரும்.<br>' +
+  '<span style="opacity:.7">Edit the text, then tap WhatsApp, Instagram or Facebook — ' +
+  'each one exports at that app\'s correct size.</span><br><br>' +
+  '<b>PIN:</b> 1234 (மாற்ற: கடை → அமைப்பு)<br><br>' +
+  'சந்தேகம் · Support: kadaiposter@gmail.com</div>');
 
 /* PWA: register the service worker and pick up new builds automatically */
 if ('serviceWorker' in navigator) {
